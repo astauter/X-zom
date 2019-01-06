@@ -1,5 +1,6 @@
 import libtcodpy as libtcod
 
+from entity import Entity
 from input_handlers import handle_keys
 
 def main():
@@ -9,9 +10,12 @@ def main():
     screen_height = 50
     #variables for screen size
 
-    player_x = int(screen_width / 2)
-    player_y = int(screen_height / 2)
+    player = Entity(int(screen_width / 2), int(screen_height /2), '@', libtcod.white)
     #putting player in the middle of the screen, int() is used because python 3 doesnt auto truncate so we need int() to remove the float
+    npc = Entity(int(screen_width /2 -5), int(screen_height /2), '@', libtcod.yellow)
+    entities = [npc, player]
+    #"list" that will hold all entities on the map
+
 
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
     # telling which font to use 'arial10x10' is the actual file we are importing, the other two are telling which type of file we are reading in this case a greyscale file with TCOD layout
@@ -31,11 +35,11 @@ def main():
         #will update key and mouse variables with the user inputs
 
         libtcod.console_set_default_foreground(con, libtcod.white)
-        libtcod.console_put_char(con, player_x, player_y, '@', libtcod.BKGND_NONE)
+        libtcod.console_put_char(con, player.x, player.y, player.char, libtcod.BKGND_NONE)
             #0 refers to console we are printing to, next are the x and y coordinates, next is the symbol we are printing, then the background
         libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
 
-        libtcod.console_put_char(con, player_x, player_y, ' ', libtcod.BKGND_NONE)
+        libtcod.console_put_char(con, player.x, player.y, ' ', libtcod.BKGND_NONE)
             #second version to clear the console behind us i think
 
 
@@ -54,8 +58,7 @@ def main():
 
         if move:
             dx, dy = move
-            player_x += dx
-            player_y += dy
+            player.move(dx, dy)
 
         if exit:
             return True

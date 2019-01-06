@@ -2,6 +2,7 @@ import libtcodpy as libtcod
 
 from entity import Entity
 from input_handlers import handle_keys
+from render_functions import clear_all, render_all
 
 def main():
     #how to define a function in python
@@ -31,23 +32,18 @@ def main():
 
     while not libtcod.console_is_window_closed():
         #game loop; won't end until we close the screen
+
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
         #will update key and mouse variables with the user inputs
 
-        libtcod.console_set_default_foreground(con, libtcod.white)
-        libtcod.console_put_char(con, player.x, player.y, player.char, libtcod.BKGND_NONE)
-            #0 refers to console we are printing to, next are the x and y coordinates, next is the symbol we are printing, then the background
-        libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
-
-        libtcod.console_put_char(con, player.x, player.y, ' ', libtcod.BKGND_NONE)
-            #second version to clear the console behind us i think
-
-
-        #libtcod.console_set_default_foreground(0, libtcod.red)
-            #sets the color for our symbol, 0 is the console we are drawing to?
+        render_all(con, entities, screen_width, screen_height)
+        #draws entities on the entities list/array, takes the console, entities, and screen size then calls draw_entity on them then "blits" (or draws) the changes on the screen
 
         libtcod.console_flush()
         #puts everything on the screen
+
+        clear_all(con, entities)
+        #clears the entities after drawing them to the screen so they don't leave a background
 
         action = handle_keys(key)
 

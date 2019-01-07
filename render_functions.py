@@ -1,12 +1,22 @@
 import libtcodpy as libtcod
 
-def render_all(con, entities, screen_width, screen_height):
+def render_all(con, entities, game_map, screen_width, screen_height, colors):
+    # Draws each tile on the game map, & checks if it blocks sight or not,if yes it draws a wall, if not it draws a floor
+    for y in range(game_map.height):
+        for x in range(game_map.width):
+            wall = game_map.tiles[x][y].block_sight
+
+            if wall:
+                libtcod.console_set_char_background(con, x, y, colors.get('dark_wall'), libtcod.BKGND_SET)
+            else:
+                libtcod.console_set_char_background(con, x, y, colors.get('dark_ground'), libtcod.BKGND_SET)
+
     for entity in entities:
         draw_entity(con, entity)
 
     libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
 
-#draws entities on the entities list/array, takes the console, entities, and screen size then calls draw_entity on them then "blits" (or draws) the changes on the screen
+    #draws entities on the entities list/array, takes the console, entities, and screen size then calls draw_entity on them then "blits" (or draws) the changes on the screen
 
 def clear_all(con, entities):
     for entity in entities:

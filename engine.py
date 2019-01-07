@@ -2,6 +2,7 @@ import libtcodpy as libtcod
 
 from entity import Entity
 from input_handlers import handle_keys
+from map_objects.game_map import GameMap
 from render_functions import clear_all, render_all
 
 def main():
@@ -10,6 +11,15 @@ def main():
     screen_width = 80
     screen_height = 50
     #variables for screen size
+
+    map_width = 80
+    map_height = 45
+
+    colors = {
+        'dark_wall' : libtcod.Color(0, 0, 100),
+        'dark_ground': libtcod.Color(50, 50, 150)
+    }
+    #wall and ground outside the field of View
 
     player = Entity(int(screen_width / 2), int(screen_height /2), '@', libtcod.white)
     #putting player in the middle of the screen, int() is used because python 3 doesnt auto truncate so we need int() to remove the float
@@ -26,6 +36,8 @@ def main():
 
     con = libtcod.console_new(screen_width, screen_height)
 
+    game_map = GameMap(map_width, map_height)
+
     key = libtcod.Key()
     mouse = libtcod.Mouse()
     #variable who hold our keyboard and mouse input
@@ -36,8 +48,8 @@ def main():
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
         #will update key and mouse variables with the user inputs
 
-        render_all(con, entities, screen_width, screen_height)
-        #draws entities on the entities list/array, takes the console, entities, and screen size then calls draw_entity on them then "blits" (or draws) the changes on the screen
+        render_all(con, entities, game_map, screen_width, screen_height, colors)
+        #draws entities on the entities list/array, takes the console, entities, screen size, and colors then calls draw_entity on them then "blits" (or draws) the changes on the screen
 
         libtcod.console_flush()
         #puts everything on the screen
@@ -54,7 +66,9 @@ def main():
 
         if move:
             dx, dy = move
-            player.move(dx, dy)
+
+            if not game_map.is_blocked(player.x + dx, player.y + dy):
+                player.move(dx, dy)
 
         if exit:
             return True

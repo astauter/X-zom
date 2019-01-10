@@ -7,7 +7,7 @@ class Tile:
 
         # by default, if a tile is blocked, it also blocks sight
         if block_sight is None:
-            #none is a bool value comperable to null assignments to None are illigal and raise a syntax error
+            #none is a bool value comperable to null, assignments to None are illigal and raise a syntax error
             block_sight = blocked
 
         self.block_sight = block_sight

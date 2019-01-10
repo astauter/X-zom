@@ -26,6 +26,7 @@ def main():
     # tells us whether to light up walls we see
     fov_radius = 10
     # tells us how far our character can see
+    max_monsters_per_room = 3
 
     colors = {
         'dark_wall' : libtcod.Color(0, 0, 100),
@@ -33,14 +34,10 @@ def main():
         'light_wall': libtcod.Color(130, 110, 50),
         'light_ground': libtcod.Color(200, 180, 50)
     }
-    #wall and ground outside the field of View
+    #dark wall/ground outside fov, light is what character can see
 
-    player = Entity(int(screen_width / 2), int(screen_height /2), '@', libtcod.white)
-    #putting player in the middle of the screen, int() is used because python 3 doesnt auto truncate so we need int() to remove the float
-    npc = Entity(int(screen_width /2 -5), int(screen_height /2), '@', libtcod.yellow)
-    entities = [npc, player]
-    #"list" that will hold all entities on the map
-
+    player = Entity(0, 0, '@', libtcod.white)
+    entities = [player]
 
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
     # telling which font to use 'arial10x10' is the actual file we are importing, the other two are telling which type of file we are reading in this case a greyscale file with TCOD layout
@@ -51,7 +48,7 @@ def main():
     con = libtcod.console_new(screen_width, screen_height)
 
     game_map = GameMap(map_width, map_height)
-    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player)
+    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room)
 
     fov_recompute = True
 

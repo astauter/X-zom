@@ -95,7 +95,12 @@ def main():
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y)
 
                 if target:
-                    print('You kick the ' + target.name + ' in the shins, dealing 0! damage!')
+
+                    if target.name == "NPC":
+                        print('Hello Bob!')
+
+                    else:
+                        print('You kick the ' + target.name + ' in the shins, dealing 0! damage!')
                 else:
                     player.move(dx, dy)
 

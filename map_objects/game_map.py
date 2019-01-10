@@ -105,8 +105,11 @@ class GameMap:
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 #if no monster is there we put a troll or an orc
-                if randint(0, 100) < 80:
+                num = randint(0, 100)
+                if num < 50:
                     monster = Entity(x, y, 'o', libtcod.desaturated_green, 'Orc', blocks=True)
+                elif num > 50 and num < 80:
+                    monster = Entity(x, y, 'N', libtcod.light_yellow, "NPC", blocks=True)
                 else:
                     monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', blocks=True)
 

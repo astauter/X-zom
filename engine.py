@@ -170,8 +170,8 @@ def main():
                             if game_state == GameStates.PLAYER_DEAD:
                                 break
 
-                        if game_state == GameStates.PLAYER_DEAD:
-                            break
+                    if game_state == GameStates.PLAYER_DEAD:
+                        break
 
             else:
                 game_state = GameStates.PLAYERS_TURN

@@ -79,7 +79,7 @@ def main():
                           fov_light_walls, fov_algorithm)
             # checks and recomputes the field of view
 
-        render_all(con, entities, game_map, fov_map, fov_recompute,
+        render_all(con, entities, player, game_map, fov_map, fov_recompute,
                    screen_width, screen_height, colors)
         # draws entities on the entities list/array, takes the console, entities, screen size, and colors then calls draw_entity on them then "blits" (or draws) the changes on the screen
 

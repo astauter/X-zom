@@ -7,7 +7,7 @@ from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
 from input_handlers import handle_keys
 from map_objects.game_map import GameMap
-from render_functions import clear_all, render_all
+from render_functions import clear_all, render_all, RenderOrder
 
 
 def main():
@@ -42,7 +42,7 @@ def main():
 
     fighter_component = Fighter(hp=30, defense=2, power=5)
     player = Entity(0, 0, '@', libtcod.white, 'Player',
-                    blocks=True, fighter=fighter_component)
+                    blocks=True, render_order=RenderOrder.ACTOR,  fighter=fighter_component)
     entities = [player]
 
     libtcod.console_set_custom_font(

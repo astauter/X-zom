@@ -7,6 +7,7 @@ from components.fighter import Fighter
 from entity import Entity
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
+from render_functions import RenderOrder
 
 
 class GameMap:
@@ -115,16 +116,16 @@ class GameMap:
                     ai_component = BasicMonster()
 
                     monster = Entity(x, y, 'o', libtcod.desaturated_green, 'Orc',
-                                     blocks=True, fighter=fighter_component, ai=ai_component)
+                                     blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
                 elif num > 50 and num < 80:
                     monster = Entity(
-                        x, y, 'N', libtcod.light_yellow, "NPC", blocks=True)
+                        x, y, 'N', libtcod.light_yellow, "NPC", blocks=True, render_order=RenderOrder.ACTOR)
                 else:
                     fighter_component = Fighter(hp=16, defense=1, power=4)
                     ai_component = BasicMonster()
 
                     monster = Entity(
-                        x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, fighter=fighter_component, ai=ai_component)
+                        x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
 
                 entities.append(monster)
 

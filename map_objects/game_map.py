@@ -124,7 +124,7 @@ class GameMap:
                     ai_component = BasicMonster()
 
                     monster = Entity(
-                        x, y, 'T', libtcod.darker_green, 'Troll', blocks=True)
+                        x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, fighter=fighter_component, ai=ai_component)
 
                 entities.append(monster)
 

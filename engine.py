@@ -83,7 +83,8 @@ def main():
     while not libtcod.console_is_window_closed():
         # game loop; won't end until we close the screen
 
-        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
+        libtcod.sys_check_for_event(
+            libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
         # will update key and mouse variables with the user inputs
 
         if fov_recompute:
@@ -92,7 +93,7 @@ def main():
             # checks and recomputes the field of view
 
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log,
-                   screen_width, screen_height, bar_width, panel_height, panel_y, colors)
+                   screen_width, screen_height, bar_width, panel_height, panel_y,  mouse, colors)
         # draws entities on the entities list/array, takes the console, entities, screen size, and colors then calls draw_entity on them then "blits" (or draws) the changes on the screen
 
         fov_recompute = False

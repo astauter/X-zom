@@ -81,7 +81,7 @@ class GameMap:
                 num_rooms += 1
 
     def create_room(self, room):
-        # got through the tiles in the created rectangle and make them passagble
+        # go through the tiles in the created rectangle and make them passagble
         for x in range(room.x1 + 1, room.x2):
             for y in range(room.y1 + 1, room.y2):
                 self.tiles[x][y].blocked = False

@@ -53,7 +53,7 @@ def main():
 
     fighter_component = Fighter(hp=30, defense=2, power=5)
     # player stats
-    inventory_component = Inventory(1)
+    inventory_component = Inventory(26)
     # how many items can be held
 
     player = Entity(0, 0, '@', libtcod.white, 'Player',
@@ -85,6 +85,8 @@ def main():
     # variable who hold our keyboard and mouse input
 
     game_state = GameStates.PLAYERS_TURN
+    previous_game_state = game_state
+    # for use after closing a menu and not losing a turn
 
     while not libtcod.console_is_window_closed():
         # game loop; won't end until we close the screen
@@ -99,7 +101,7 @@ def main():
             # checks and recomputes the field of view
 
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log,
-                   screen_width, screen_height, bar_width, panel_height, panel_y,  mouse, colors)
+                   screen_width, screen_height, bar_width, panel_height, panel_y,  mouse, colors, game_state)
         # draws entities on the entities list/array, takes the console, entities, screen size, and colors then calls draw_entity on them then "blits" (or draws) the changes on the screen
 
         fov_recompute = False
@@ -114,6 +116,7 @@ def main():
 
         move = action.get('move')
         pickup = action.get('pickup')
+        show_inventory = action.get('show_inventory')
         exit = action.get('exit')
         # get() returns the value for the specified key if the key is in the dictionary
         fullscreen = action.get('fullscreen')
@@ -157,8 +160,19 @@ def main():
                 message_log.add_message(
                     Message('There is nothing here to pick up.', libtcod.white))
 
+        if show_inventory:
+            if game_state != GameStates.SHOW_INVENTORY:
+                previous_game_state = game_state
+            game_state = GameStates.SHOW_INVENTORY
+
+        # refactor here to include a sure you want to quit?
+
         if exit:
-            return True
+            # w/ esc we exit to game from menu or quit from main game
+            if game_state == GameStates.SHOW_INVENTORY:
+                game_state = previous_game_state
+            else:
+                return True
 
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
@@ -213,11 +227,6 @@ def main():
 
             else:
                 game_state = GameStates.PLAYERS_TURN
-
-        #key = libtcod.console_check_for_keypress()
-        # if key.vk == libtcod.KEY_ESCAPE:
-        #    return True
-        # allows an exit by hitting an excape. if excape was hit, we return true and leave the loop
 
 
 if __name__ == '__main__':

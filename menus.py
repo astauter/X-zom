@@ -7,7 +7,7 @@ def menu(con, header, options, width, screen_width, screen_height):
     if len(options) > 26:
         raise ValueError('Cannot have a menu with more than 26 options')
 
-    # calculate total hegith for the header and one line per option
+    # calculate total height for the header and one line per option
     header_height = libtcod.console_get_height_rect(
         con, 0, 0, width, screen_height, header)
     height = len(options) + header_height
@@ -15,6 +15,12 @@ def menu(con, header, options, width, screen_width, screen_height):
     # create an off-screen console that represents the menu's window
     window = libtcod.console_new(width, height)
 
+    # print header with autowrap
+    libtcod.console_set_default_foreground(window, libtcod.white)
+    libtcod.console_print_rect_ex(
+        window, 0, 0, width, height, libtcod.BKGND_NONE, libtcod.LEFT, header)
+
+    # refactor
     # print all the options
     y = header_height
     letter_index = ord('a')

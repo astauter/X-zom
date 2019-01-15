@@ -44,12 +44,13 @@ class Inventory:
                 if item_use_result.get('consumed'):
                     self.remove_item(item_entity)
 
-            results.extend(item_use_result)
+            # for some reason append vs extend breaks the whole game!!!!
+            results.append(item_use_result)
 
         return results
 
     def remove_item(self, item):
-        self.items.remove
+        self.items.remove(item)
 
     def __repr__(self):
         return f'Inventory : capacity = {self.capacity}, items = {self.items}'

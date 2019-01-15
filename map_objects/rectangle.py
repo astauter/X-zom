@@ -11,5 +11,8 @@ class Rect:
         return (center_x, center_y)
 
     def intersect(self, other):
-        #returns true if this rectangele intersects with another one
+        # returns true if this rectangele intersects with another one
         return (self.x1 <= other.x2 and self.x2 >= other.x1 and self.y1 <= other.y2 and self.y2 >= other.y1)
+
+    def __repr__(self):
+        return f'Rect: x1 = {self.x1}, y1 = {self.y1}, x2 = {self.x2}, y2 = {self.y2}'

@@ -1,6 +1,7 @@
 import libtcodpy as libtcod
 
 from components.fighter import Fighter
+from components.inventory import Inventory
 from death_functions import kill_monster, kill_player
 from entity import Entity, get_blocking_entities_at_location
 from fov_functions import initialize_fov, recompute_fov
@@ -40,6 +41,7 @@ def main():
     fov_radius = 10
     # tells us how far our character can see
     max_monsters_per_room = 3
+    max_items_per_room = 2
 
     colors = {
         'dark_wall': libtcod.Color(0, 0, 100),
@@ -50,8 +52,12 @@ def main():
     # dark wall/ground outside fov, light is what character can see
 
     fighter_component = Fighter(hp=30, defense=2, power=5)
+    # player stats
+    inventory_component = Inventory(26)
+    # how many items can be held
+
     player = Entity(0, 0, '@', libtcod.white, 'Player',
-                    blocks=True, render_order=RenderOrder.ACTOR,  fighter=fighter_component)
+                    blocks=True, render_order=RenderOrder.ACTOR,  fighter=fighter_component, inventory=inventory_component)
     entities = [player]
 
     libtcod.console_set_custom_font(
@@ -66,7 +72,7 @@ def main():
 
     game_map = GameMap(map_width, map_height)
     game_map.make_map(max_rooms, room_min_size, room_max_size,
-                      map_width, map_height, player, entities, max_monsters_per_room)
+                      map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room)
 
     fov_recompute = True
 
@@ -79,6 +85,8 @@ def main():
     # variable who hold our keyboard and mouse input
 
     game_state = GameStates.PLAYERS_TURN
+    previous_game_state = game_state
+    # for use after closing a menu and not losing a turn
 
     while not libtcod.console_is_window_closed():
         # game loop; won't end until we close the screen
@@ -93,7 +101,7 @@ def main():
             # checks and recomputes the field of view
 
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log,
-                   screen_width, screen_height, bar_width, panel_height, panel_y,  mouse, colors)
+                   screen_width, screen_height, bar_width, panel_height, panel_y,  mouse, colors, game_state)
         # draws entities on the entities list/array, takes the console, entities, screen size, and colors then calls draw_entity on them then "blits" (or draws) the changes on the screen
 
         fov_recompute = False
@@ -104,11 +112,15 @@ def main():
         clear_all(con, entities)
         # clears the entities after drawing them to the screen so they don't leave a background
 
-        action = handle_keys(key)
+        action = handle_keys(key, game_state)
 
         move = action.get('move')
-        # get() returns the value for the specified key if the key is in the dictionary
+        pickup = action.get('pickup')
+        show_inventory = action.get('show_inventory')
+        drop_inventory = action.get('drop_inventory')
+        inventory_index = action.get('inventory_index')
         exit = action.get('exit')
+        # get() returns the value for the specified key if the key is in the dictionary
         fullscreen = action.get('fullscreen')
 
         player_turn_results = []
@@ -139,15 +151,54 @@ def main():
 
                 game_state = GameStates.ENEMY_TURN
 
+        elif pickup and game_state == GameStates.PLAYERS_TURN:
+            for entity in entities:
+                if entity.item and entity.x == player.x and entity.y == player.y:
+                    pickup_results = player.inventory.add_item(entity)
+                    player_turn_results.extend(pickup_results)
+
+                    break
+            else:
+                message_log.add_message(
+                    Message('There is nothing here to pick up.', libtcod.white))
+
+        if show_inventory:
+            # need the if here to check otherwise you can get stuck in the inventory screen
+            if game_state != GameStates.SHOW_INVENTORY:
+                previous_game_state = game_state
+            game_state = GameStates.SHOW_INVENTORY
+
+        if drop_inventory:
+            previous_game_state = game_state
+            game_state = GameStates.DROP_INVENTORY
+
+        if inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(player.inventory.items):
+            item = player.inventory.items[inventory_index]
+
+            if game_state == GameStates.SHOW_INVENTORY:
+                player_turn_results.extend(player.inventory.use(item))
+            elif game_state == GameStates.DROP_INVENTORY:
+                player_turn_results.extend(player.inventory.drop_item(item))
+
+        # refactor here to include a sure you want to quit?
+
         if exit:
-            return True
+            # w/ esc we exit to game from menu or quit from main game
+            if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+                game_state = previous_game_state
+            else:
+                return True
 
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
         for player_turn_result in player_turn_results:
+            #print('player turn result', player_turn_result)
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
+            item_added = player_turn_result.get('item_added')
+            item_consumed = player_turn_result.get('consumed')
+            item_dropped = player_turn_result.get('item_dropped')
 
             if message:
                 message_log.add_message(message)
@@ -159,6 +210,18 @@ def main():
                     message = kill_monster(dead_entity)
 
                 message_log.add_message(message)
+
+            if item_added:
+                entities.remove(item_added)
+
+                game_state = GameStates.ENEMY_TURN
+
+            if item_consumed:
+                game_state = GameStates.ENEMY_TURN
+
+            if item_dropped:
+                entities.append(item_dropped)
+                game_state = GameStates.ENEMY_TURN
 
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
@@ -189,11 +252,6 @@ def main():
 
             else:
                 game_state = GameStates.PLAYERS_TURN
-
-        #key = libtcod.console_check_for_keypress()
-        # if key.vk == libtcod.KEY_ESCAPE:
-        #    return True
-        # allows an exit by hitting an excape. if excape was hit, we return true and leave the loop
 
 
 if __name__ == '__main__':

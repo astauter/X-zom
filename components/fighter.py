@@ -20,6 +20,12 @@ class Fighter:
 
         return results
 
+    def heal(self, amount):
+        self.hp += amount
+
+        if self.hp > self.max_hp:
+            self.hp = self.max_hp
+
     def attack(self, target):
         results = []
 
@@ -36,3 +42,6 @@ class Fighter:
                 self.owner.name.capitalize(), target.name), libtcod.white)})
 
         return results
+
+    def __repr__(self):
+        return f'Fighter: hp = {self.hp}, defense = {self.defense}, power = {self.power}'

@@ -6,6 +6,9 @@ from components.fighter import Fighter
 from components.item import Item
 
 from entity import Entity
+
+from item_functions import heal
+
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
 from render_functions import RenderOrder
@@ -120,9 +123,11 @@ class GameMap:
 
                     monster = Entity(x, y, 'o', libtcod.desaturated_green, 'Orc',
                                      blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+
                 elif num > 50 and num < 80:
                     monster = Entity(
                         x, y, 'N', libtcod.light_yellow, "NPC", blocks=True, render_order=RenderOrder.ACTOR)
+
                 else:
                     fighter_component = Fighter(hp=16, defense=1, power=4)
                     ai_component = BasicMonster()
@@ -137,7 +142,8 @@ class GameMap:
             y = randint(room.y1 + 1, room.y2 - 1)
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                item_component = Item()
+                item_component = Item(use_function=heal, amount=4)
+                print(item_component)
                 item = Entity(x, y, '!', libtcod.violet,
                               'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
 
@@ -148,3 +154,6 @@ class GameMap:
             return True
 
         return False
+
+    def __repr__(self):
+        return f'Game Map: Height = {self.height}, width = {self.width}, tiles = {self.tiles}'

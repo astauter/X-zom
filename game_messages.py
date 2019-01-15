@@ -8,6 +8,9 @@ class Message:
         self.text = text
         self.color = color
 
+    def __repr__(self):
+        return f'Message: text = {self.text}, color = {self.color}'
+
 
 class MessageLog:
     def __init__(self, x, width, height):
@@ -27,3 +30,6 @@ class MessageLog:
 
             # add the new line as a message object, with the text and the color
             self.messages.append(Message(line, message.color))
+
+    def __repr__(self):
+        return f'MessageLog: messages = {self.messages}, x = {self.x}, width = {self.width}, height = {self.height}'

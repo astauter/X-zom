@@ -19,3 +19,16 @@ def heal(*args, **kwargs):
             {'consumed': True, 'message': Message('Your wounds start to feel better!', libtcod.green)})
 
     return results
+
+
+def gain_attack(*args, **kwargs):
+    entity = args[0]
+    amount = kwargs.get('amount')
+
+    results = []
+
+    entity.fighter.gain_attack(amount)
+    results.append({'consumed': True, 'message': Message(
+        'You feel the power coursing through your veins. You feel stronger!', libtcod.green)})
+
+    return results

@@ -16,6 +16,9 @@ class Fighter:
         self.hp -= amount
 
         if self.hp <= 0:
+            self.hp = 0
+
+        if self.hp == 0:
             results.append({'dead': self.owner})
 
         return results
@@ -25,6 +28,9 @@ class Fighter:
 
         if self.hp > self.max_hp:
             self.hp = self.max_hp
+
+    def gain_attack(self, amount):
+        self.power += amount
 
     def attack(self, target):
         results = []

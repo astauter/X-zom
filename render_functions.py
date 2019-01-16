@@ -81,7 +81,6 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     # Print game message, one line at at a time
     for y, message in enumerate(message_log.messages, 1):
         libtcod.console_set_default_foreground(panel, message.color)
-        #print(y, message_log.x, libtcod.BKGND_NONE, )
         libtcod.console_print_ex(panel, message_log.x,
                                  y, libtcod.BKGND_NONE, libtcod.LEFT, message.text)
 

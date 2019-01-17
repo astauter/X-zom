@@ -7,7 +7,7 @@ from components.item import Item
 
 from entity import Entity
 
-from item_functions import heal, gain_attack
+from item_functions import heal, gain_attack, cast_lightning
 
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
@@ -143,14 +143,19 @@ class GameMap:
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 num = randint(0, 100)
-                if num < 85:
+                if num < 50:
                     item_component = Item(use_function=heal, amount=4)
                     item = Entity(x, y, '!', libtcod.violet,
                                   'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
-                else:
+                elif num >= 50 and num < 80:
                     item_component = Item(use_function=gain_attack, amount=1)
                     item = Entity(x, y, 'a', libtcod.red, 'Attack Potion',
                                   render_order=RenderOrder.ITEM, item=item_component)
+                else:
+                    item_component = Item(
+                        use_function=cast_lightning, damage=20, maximum_range=5)
+                    item = Entity(x, y, 'L', libtcod.yellow,
+                                  'Lightning Scroll', render_order=RenderOrder.ITEM, item=item_component)
 
                 entities.append(item)
 

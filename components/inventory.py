@@ -26,7 +26,7 @@ class Inventory:
 
         return results
 
-    def use(self, item_entity, **kwargs):
+    def use(self, item_entity, game_map=None, **kwargs):
         results = []
 
         item_component = item_entity.item
@@ -41,7 +41,7 @@ class Inventory:
                 kwargs = {**item_component.function_kwargs, **kwargs}
 
                 item_use_results = item_component.use_function(
-                    self.owner, **kwargs)
+                    self.owner, game_map, **kwargs)
 
                 for item_use_result in item_use_results:
                     if item_use_result.get('consumed'):

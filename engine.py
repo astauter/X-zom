@@ -47,7 +47,9 @@ def main():
         'dark_wall': libtcod.Color(0, 0, 100),
         'dark_ground': libtcod.Color(50, 50, 150),
         'light_wall': libtcod.Color(130, 110, 50),
-        'light_ground': libtcod.Color(200, 180, 50)
+        'light_ground': libtcod.Color(200, 180, 50),
+        'charred_wall': libtcod.Color(73, 62, 29),
+        'charred_ground': libtcod.Color(82, 73, 20)
     }
     # dark wall/ground outside fov, light is what character can see
 
@@ -191,8 +193,9 @@ def main():
                 target_x, target_y = left_click
 
                 item_use_results = player.inventory.use(
-                    targeting_item, entities=entities, fov_map=fov_map, target_x=target_x, target_y=target_y)
+                    targeting_item, game_map, entities=entities, fov_map=fov_map, target_x=target_x, target_y=target_y)
                 player_turn_results.extend(item_use_results)
+
             elif right_click:
                 player_turn_results.append({'targeting_cancelled': True})
                 message_log.add_message(
@@ -223,6 +226,7 @@ def main():
             targeting = player_turn_result.get('targeting')
             targeting_cancelled = player_turn_result.get(
                 'targeting_cancelled')
+            force_recompute = player_turn_result.get('force_recompute')
 
             if message:
                 message_log.add_message(message)
@@ -257,6 +261,9 @@ def main():
 
             if targeting_cancelled:
                 game_state = previous_game_state
+
+            if force_recompute:
+                fov_recompute = True
 
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:

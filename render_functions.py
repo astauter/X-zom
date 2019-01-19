@@ -46,15 +46,20 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
             for x in range(game_map.width):
                 visible = libtcod.map_is_in_fov(fov_map, x, y)
                 wall = game_map.tiles[x][y].block_sight
+                burned = game_map.tiles[x][y].burned
 
                 # if tile falls in fov_map, draw with light colors, if not draw with dark
                 if visible:
                     if wall:
+                        current_color = colors.get(
+                            'charred_wall') if burned else colors.get('light_wall')
                         libtcod.console_set_char_background(
-                            con, x, y, colors.get('light_wall'), libtcod.BKGND_SET)
+                            con, x, y, current_color, libtcod.BKGND_SET)
                     else:
+                        current_color = colors.get(
+                            'charred_ground') if burned else colors.get('light_ground')
                         libtcod.console_set_char_background(
-                            con, x, y, colors.get('light_ground'), libtcod.BKGND_SET)
+                            con, x, y, current_color, libtcod.BKGND_SET)
 
                     game_map.tiles[x][y].explored = True
 

@@ -65,7 +65,7 @@ def cast_lightning(*args, **kwargs):
     return results
 
 
-def cast_fireball(*args, **kwargs):
+def cast_fireball(owner, game_map, *args, **kwargs):
     entities = kwargs.get('entities')
     fov_map = kwargs.get('fov_map')
     damage = kwargs.get('damage')
@@ -89,4 +89,10 @@ def cast_fireball(*args, **kwargs):
                 {'message': Message(f'The {entity.name} gets burned for {damage} damage.', libtcod.orange)})
             results.extend(entity.fighter.take_damage(damage))
 
+    burned_tiles = game_map.get_tiles(target_x, target_y, radius)
+    for tile in burned_tiles:
+        print('tile:', tile)
+        tile.burned = True
+
+    results.append({'force_recompute': True})
     return results

@@ -1,5 +1,6 @@
 import libtcodpy as libtcod
 import math
+from utility_func import distance_to
 
 from render_functions import RenderOrder
 
@@ -98,12 +99,10 @@ class Entity:
         libtcod.path_delete(my_path)
 
     def distance(self, x, y):
-        return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
+        return distance_to(x, self.x, y, self.y)
 
     def distance_to(self, other):
-        dx = other.x - self.x
-        dy = other.y - self.y
-        return math.sqrt(dx ** 2 + dy ** 2)
+        return distance_to(other.x, self.x, other.y, self.y)
 
     def __repr__(self):
         return f'Entity: x = {self.x}, y = {self.y}, char = {self.char}, color = {self.color}, name = {self.name}, blocks = {self.blocks}, render_order = {self.render_order}, fighter = {self.fighter}. ai = {self.ai}. item = {self.item}, inventory = {self.inventory}'

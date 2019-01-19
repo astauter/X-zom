@@ -7,7 +7,9 @@ from components.item import Item
 
 from entity import Entity
 
-from item_functions import heal, gain_attack
+from game_messages import Message
+
+from item_functions import heal, gain_attack, cast_lightning, cast_fireball, cast_confuse
 
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
@@ -22,18 +24,10 @@ class GameMap:
         self.tiles = self.initialize_tiles()
 
     def initialize_tiles(self):
-        tiles = [[Tile(True) for y in range(self.height)]
+        tiles = [[Tile(x, y, True) for y in range(self.height)]
                  for x in range(self.width)]
         # initialize all tiles to be blocked by default "dig" out as we go along
 
-        #tiles[30][22].blocked = True
-        #tiles[30][22].block_sight = True
-        #tiles[31][22].blocked = True
-        #tiles[31][22].block_sight = True
-        #tiles[31][22].blocked = True
-        #tiles[31][22].block_sight = True
-
-        # presetting tiles for demonstration
         return tiles
 
     def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room):
@@ -143,13 +137,28 @@ class GameMap:
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 num = randint(0, 100)
-                if num < 85:
+                if num < 30:
                     item_component = Item(use_function=heal, amount=4)
                     item = Entity(x, y, '!', libtcod.violet,
                                   'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
-                else:
+                elif num >= 30 and num < 50:
+                    item_component = Item(use_function=cast_confuse, targeting=True, targeting_message=Message(
+                        'Left-click an enemy to confuse it, or right-click to cancel.', libtcod.light_blue))
+                    item = Entity(x, y, '#', libtcod.light_pink, 'Confusion Scroll',
+                                  render_order=RenderOrder.ITEM, item=item_component)
+                elif num >= 50 and num < 65:
                     item_component = Item(use_function=gain_attack, amount=1)
                     item = Entity(x, y, 'a', libtcod.red, 'Attack Potion',
+                                  render_order=RenderOrder.ITEM, item=item_component)
+                elif num >= 65 and num < 90:
+                    item_component = Item(
+                        use_function=cast_lightning, damage=20, maximum_range=5)
+                    item = Entity(x, y, 'L', libtcod.yellow,
+                                  'Lightning Scroll', render_order=RenderOrder.ITEM, item=item_component)
+                else:
+                    item_component = Item(
+                        use_function=cast_fireball, targeting=True, targeting_message=Message('Lef-click a target tile for the fireball, or right-click to cancel.', libtcod.white), damage=12, radius=3)
+                    item = Entity(x, y, '#', libtcod.red, 'Fireball',
                                   render_order=RenderOrder.ITEM, item=item_component)
 
                 entities.append(item)
@@ -160,5 +169,14 @@ class GameMap:
 
         return False
 
+    def get_tiles(self, x, y, radius):
+        center_tile = self.tiles[x][y]
+        affected_tiles = [center_tile]
+        for tile_row in self.tiles:
+            for tile in tile_row:
+                if center_tile.distance_to(tile) < radius:
+                    affected_tiles.append(tile)
+        return affected_tiles
+
     def __repr__(self):
-        return f'Game Map: Height = {self.height}, width = {self.width}, tiles = {self.tiles}'
+        return f'Game Map: Height = {self.height}, width = {self.width}'

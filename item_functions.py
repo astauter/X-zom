@@ -93,7 +93,6 @@ def cast_fireball(owner, game_map, *args, **kwargs):
 
     burned_tiles = game_map.get_tiles(target_x, target_y, radius)
     for tile in burned_tiles:
-        print('tile:', tile)
         tile.burned = True
 
     results.append({'force_recompute': True})

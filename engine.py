@@ -1,92 +1,42 @@
 import libtcodpy as libtcod
 
-from components.fighter import Fighter
-from components.inventory import Inventory
 from death_functions import kill_monster, kill_player
-from entity import Entity, get_blocking_entities_at_location
+from entity import get_blocking_entities_at_location
 from fov_functions import initialize_fov, recompute_fov
-from game_messages import MessageLog, Message
+from game_messages import Message
 from game_states import GameStates
 from input_handlers import handle_keys, handle_mouse
-from map_objects.game_map import GameMap
+from loader_functions.initialize_new_game import get_constants, get_game_variables
 from render_functions import clear_all, render_all, RenderOrder
 
 
 def main():
-    # how to define a function in python
-
-    screen_width = 80
-    screen_height = 50
-    # variables for screen size
-
-    bar_width = 20
-    panel_height = 7
-    panel_y = screen_height - panel_height
-
-    message_x = bar_width + 2
-    message_width = screen_width - bar_width - 2
-    message_height = panel_height - 1
-
-    map_width = 80
-    map_height = 43
-
-    room_max_size = 10
-    room_min_size = 6
-    max_rooms = 30
-
-    fov_algorithm = 0
-    # default algo used by libtcod
-    fov_light_walls = True
-    # tells us whether to light up walls we see
-    fov_radius = 10
-    # tells us how far our character can see
-    max_monsters_per_room = 3
-    max_items_per_room = 2
-
-    colors = {
-        'dark_wall': libtcod.Color(0, 0, 100),
-        'dark_ground': libtcod.Color(50, 50, 150),
-        'light_wall': libtcod.Color(130, 110, 50),
-        'light_ground': libtcod.Color(200, 180, 50),
-        'charred_wall': libtcod.Color(73, 62, 29),
-        'charred_ground': libtcod.Color(82, 73, 20)
-    }
-    # dark wall/ground outside fov, light is what character can see
-
-    fighter_component = Fighter(hp=30, defense=2, power=5)
-    # player stats
-    inventory_component = Inventory(26)
-    # how many items can be held
-
-    player = Entity(0, 0, '@', libtcod.white, 'Player',
-                    blocks=True, render_order=RenderOrder.ACTOR,  fighter=fighter_component, inventory=inventory_component)
-    entities = [player]
+    constants = get_constants()
 
     libtcod.console_set_custom_font(
         'arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
     # telling which font to use 'arial10x10' is the actual file we are importing, the other two are telling which type of file we are reading in this case a greyscale file with TCOD layout
 
-    libtcod.console_init_root(screen_width, screen_height, 'X-ZOM', False)
+    libtcod.console_init_root(constants['screen_width'],
+                              constants['screen_height'], 'X-ZOM', False)
     # creates the screen from width and height, with title and whether to go fullscreen or not
 
-    con = libtcod.console_new(screen_width, screen_height)
-    panel = libtcod.console_new(screen_width, panel_height)
+    con = libtcod.console_new(
+        constants['screen_width'], constants['screen_height'])
+    panel = libtcod.console_new(
+        constants['screen_width'], constants['panel_height'])
 
-    game_map = GameMap(map_width, map_height)
-    game_map.make_map(max_rooms, room_min_size, room_max_size,
-                      map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room)
+    player, entities, game_map, message_log, game_state = get_game_variables(
+        constants)
 
     fov_recompute = True
 
     fov_map = initialize_fov(game_map)
 
-    message_log = MessageLog(message_x, message_width, message_height)
-
     key = libtcod.Key()
     mouse = libtcod.Mouse()
     # variable who hold our keyboard and mouse input
 
-    game_state = GameStates.PLAYERS_TURN
     previous_game_state = game_state
     # for use after closing a menu and not losing a turn
 
@@ -98,12 +48,12 @@ def main():
         # will update key and mouse variables with the user inputs
 
         if fov_recompute:
-            recompute_fov(fov_map, player.x, player.y, fov_radius,
-                          fov_light_walls, fov_algorithm)
+            recompute_fov(fov_map, player.x, player.y, constants['fov_radius'],
+                          constants['fov_light_walls'], constants['fov_algorithm'])
             # checks and recomputes the field of view
 
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log,
-                   screen_width, screen_height, bar_width, panel_height, panel_y,  mouse, colors, game_state)
+                   constants['screen_width'], constants['screen_height'], constants['bar_width'], constants['panel_height'], constants['panel_y'],  mouse, constants['colors'], game_state)
         # draws entities on the entities list/array, takes the console, entities, screen size, and colors then calls draw_entity on them then "blits" (or draws) the changes on the screen
 
         fov_recompute = False
@@ -217,7 +167,6 @@ def main():
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
         for player_turn_result in player_turn_results:
-            #print('player turn result', player_turn_result)
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
             item_added = player_turn_result.get('item_added')

@@ -7,7 +7,9 @@ from components.item import Item
 
 from entity import Entity
 
-from item_functions import heal, gain_attack, cast_lightning
+from game_messages import Message
+
+from item_functions import heal, gain_attack, cast_lightning, cast_fireball
 
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
@@ -26,12 +28,12 @@ class GameMap:
                  for x in range(self.width)]
         # initialize all tiles to be blocked by default "dig" out as we go along
 
-        #tiles[30][22].blocked = True
-        #tiles[30][22].block_sight = True
-        #tiles[31][22].blocked = True
-        #tiles[31][22].block_sight = True
-        #tiles[31][22].blocked = True
-        #tiles[31][22].block_sight = True
+        # tiles[30][22].blocked = True
+        # tiles[30][22].block_sight = True
+        # tiles[31][22].blocked = True
+        # tiles[31][22].block_sight = True
+        # tiles[31][22].blocked = True
+        # tiles[31][22].block_sight = True
 
         # presetting tiles for demonstration
         return tiles
@@ -143,7 +145,7 @@ class GameMap:
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 num = randint(0, 100)
-                if num < 50:
+                '''if num < 50:
                     item_component = Item(use_function=heal, amount=4)
                     item = Entity(x, y, '!', libtcod.violet,
                                   'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
@@ -155,7 +157,11 @@ class GameMap:
                     item_component = Item(
                         use_function=cast_lightning, damage=20, maximum_range=5)
                     item = Entity(x, y, 'L', libtcod.yellow,
-                                  'Lightning Scroll', render_order=RenderOrder.ITEM, item=item_component)
+                                  'Lightning Scroll', render_order=RenderOrder.ITEM, item=item_component)'''
+                item_component = Item(
+                    use_function=cast_fireball, targeting=True, targeting_message=Message('Lef-click a target tile for the fireball, or right-click to cancel.', libtcod.white), damage=12, radius=3)
+                item = Entity(x, y, '#', libtcod.red, 'Fireball',
+                              render_order=RenderOrder.ITEM, item=item_component)
 
                 entities.append(item)
 

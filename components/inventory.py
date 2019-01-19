@@ -47,8 +47,7 @@ class Inventory:
                     if item_use_result.get('consumed'):
                         self.remove_item(item_entity)
 
-            # for some reason append vs extend breaks the whole game!!!!
-                results.append(item_use_result)
+                results.extend(item_use_results)
 
         return results
 

@@ -76,7 +76,8 @@ def cast_fireball(*args, **kwargs):
     results = []
 
     if not libtcod.map_is_in_fov(fov_map, target_x, target_y):
-        results.append({'consumed': False, 'message', Message('You cannot target a tile outside of the spell range', libtcod.yellow)})
+        results.append({'consumed': False, 'message': Message(
+            'You cannot target a tile outside of the spell range', libtcod.yellow)})
         return results
 
     results.append({'consumed': True, 'message': Message(

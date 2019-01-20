@@ -1,2 +1,4 @@
 *.pyc
 *.dll
+env
+*.dat

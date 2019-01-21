@@ -11,7 +11,7 @@ class Entity:
     """
     # refactor all of these extra functions on entity, items don't need move functions for instance
 
-    def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None):
+    def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None, stairs=None):
         self.x = x
         self.y = y
         self.char = char
@@ -23,6 +23,7 @@ class Entity:
         self.ai = ai
         self.item = item
         self.inventory = inventory
+        self.stairs = stairs
 
         if self.fighter:
             self.fighter.owner = self
@@ -35,6 +36,9 @@ class Entity:
 
         if self.inventory:
             self.inventory.owner = self
+
+        if self.stairs:
+            self.stairs.owner = self
 
     def move(self, dx, dy):
         # move the entity by a given amount

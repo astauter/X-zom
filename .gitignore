@@ -2,3 +2,6 @@
 *.dll
 env
 *.dat
+*.dir
+*.bak
+*.vscode

@@ -20,7 +20,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
     key = libtcod.Key()
     mouse = libtcod.Mouse()
     # variable who hold our keyboard and mouse input
-
+    game_state = GameStates.PLAYERS_TURN
     previous_game_state = game_state
     # for use after closing a menu and not losing a turn
     targeting_item = None
@@ -58,7 +58,6 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         drop_inventory = action.get('drop_inventory')
         inventory_index = action.get('inventory_index')
         exit = action.get('exit')
-        # get() returns the value for the specified key if the key is in the dictionary
         fullscreen = action.get('fullscreen')
 
         left_click = mouse_action.get('left_click')
@@ -169,6 +168,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             if dead_entity:
                 if dead_entity == player:
                     message, game_state = kill_player(dead_entity)
+                    # refactor add restart ability
                 else:
                     message = kill_monster(dead_entity)
 
@@ -248,7 +248,7 @@ def main():
         constants['screen_width'], constants['panel_height'])
 
     player = None
-    entities = None
+    entities = []
     game_map = None
     message_log = None
     game_state = None
@@ -256,7 +256,7 @@ def main():
     show_main_menu = True
     show_load_error_message = False
 
-    main_menu_background_image = libtcod.image_load('menu_background.png')
+    main_menu_background_image = libtcod.image_load('menu_background1.png')
 
     key = libtcod.Key()
     mouse = libtcod.Mouse()
@@ -303,7 +303,7 @@ def main():
             play_game(player, entities, game_map, message_log,
                       game_state, con, panel, constants)
 
-            show_main_menu
+            show_main_menu = True
 
 
 if __name__ == '__main__':

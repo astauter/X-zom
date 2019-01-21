@@ -1,4 +1,4 @@
-import libtcodpy as libtcod
+import tcod as tcod
 
 from components.ai import ConfusedMonster
 
@@ -14,11 +14,11 @@ def heal(*args, **kwargs):
 
     if entity.fighter.hp == entity.fighter.max_hp:
         results.append({'consumed': False, 'message': Message(
-            'You are already at full health', libtcod.yellow)})
+            'You are already at full health', tcod.yellow)})
     else:
         entity.fighter.heal(amount)
         results.append(
-            {'consumed': True, 'message': Message('Your wounds start to feel better!', libtcod.green)})
+            {'consumed': True, 'message': Message('Your wounds start to feel better!', tcod.green)})
 
     return results
 
@@ -31,7 +31,7 @@ def gain_attack(*args, **kwargs):
 
     entity.fighter.gain_attack(amount)
     results.append({'consumed': True, 'message': Message(
-        'You feel the power coursing through your veins. You feel stronger!', libtcod.green)})
+        'You feel the power coursing through your veins. You feel stronger!', tcod.green)})
 
     return results
 
@@ -49,7 +49,7 @@ def cast_lightning(*args, **kwargs):
     closest_distance = maximum_range + 1
 
     for entity in entities:
-        if entity.fighter and entity != caster and libtcod.map_is_in_fov(fov_map, entity.x, entity.y,):
+        if entity.fighter and entity != caster and tcod.map_is_in_fov(fov_map, entity.x, entity.y,):
             distance = caster.distance_to(entity)
 
             if distance < closest_distance:
@@ -77,18 +77,18 @@ def cast_fireball(owner, game_map, *args, **kwargs):
 
     results = []
 
-    if not libtcod.map_is_in_fov(fov_map, target_x, target_y):
+    if not tcod.map_is_in_fov(fov_map, target_x, target_y):
         results.append({'consumed': False, 'message': Message(
-            'You cannot target a tile outside of the spell range', libtcod.yellow)})
+            'You cannot target a tile outside of the spell range', tcod.yellow)})
         return results
 
     results.append({'consumed': True, 'message': Message(
-        f'The fireball, explodes, burning everything within {radius} tiles', libtcod.orange)})
+        f'The fireball, explodes, burning everything within {radius} tiles', tcod.orange)})
 
     for entity in entities:
         if entity.distance(target_x, target_y) <= radius and entity.fighter:
             results.append(
-                {'message': Message(f'The {entity.name} gets burned for {damage} damage.', libtcod.orange)})
+                {'message': Message(f'The {entity.name} gets burned for {damage} damage.', tcod.orange)})
             results.extend(entity.fighter.take_damage(damage))
 
     burned_tiles = game_map.get_tiles(target_x, target_y, radius)
@@ -107,9 +107,9 @@ def cast_confuse(*args, **kwargs):
 
     results = []
 
-    if not libtcod.map_is_in_fov(fov_map, target_x, target_y):
+    if not tcod.map_is_in_fov(fov_map, target_x, target_y):
         results.append({'consumed': False, 'message': Message(
-            'You cannot target a tile outside of the field of view', libtcod.white)})
+            'You cannot target a tile outside of the field of view', tcod.white)})
 
         return results
 
@@ -121,12 +121,12 @@ def cast_confuse(*args, **kwargs):
             entity.ai = confused_ai
 
             results.append({'consumed': True, 'message': Message(
-                f'The eyes of {entity.name} look at you in confusion', libtcod.fuchsia)})
+                f'The eyes of {entity.name} look at you in confusion', tcod.fuchsia)})
 
             break
 
     else:
         results.append({'consumed': False, 'message': Message(
-            'There is no targetable enemy', libtcod.yellow)})
+            'There is no targetable enemy', tcod.yellow)})
 
     return results

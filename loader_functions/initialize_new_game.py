@@ -1,4 +1,4 @@
-import libtcodpy as libtcod
+import tcod as tcod
 
 from components.fighter import Fighter
 from components.inventory import Inventory
@@ -37,7 +37,7 @@ def get_constants():
     max_rooms = 30
 
     fov_algorithm = 0
-    # default algo used by libtcod
+    # default algo used by tcod
     fov_light_walls = True
     # tells us whether to light up walls we see
     fov_radius = 10
@@ -46,12 +46,12 @@ def get_constants():
     max_items_per_room = 3
 
     colors = {
-        'dark_wall': libtcod.Color(0, 0, 100),
-        'dark_ground': libtcod.Color(50, 50, 150),
-        'light_wall': libtcod.Color(130, 110, 50),
-        'light_ground': libtcod.Color(200, 180, 50),
-        'charred_wall': libtcod.Color(73, 62, 29),
-        'charred_ground': libtcod.Color(82, 73, 20)
+        'dark_wall': tcod.Color(0, 0, 100),
+        'dark_ground': tcod.Color(50, 50, 150),
+        'light_wall': tcod.Color(130, 110, 50),
+        'light_ground': tcod.Color(200, 180, 50),
+        'charred_wall': tcod.Color(73, 62, 29),
+        'charred_ground': tcod.Color(82, 73, 20)
     }
 
     constants = {
@@ -85,7 +85,7 @@ def get_game_variables(constants):
     fighter_component = Fighter(hp=30, defense=2, power=5)
     inventory_component = Inventory(26)
 
-    player = Entity(0, 0, '@', libtcod.white, 'Player',
+    player = Entity(0, 0, '@', tcod.white, 'Player',
                     blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component)
 
     entities = [player]

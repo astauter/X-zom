@@ -1,4 +1,4 @@
-import libtcodpy as libtcod
+import tcod as tcod
 
 from death_functions import kill_monster, kill_player
 from entity import get_blocking_entities_at_location
@@ -17,19 +17,19 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
     fov_map = initialize_fov(game_map)
 
-    key = libtcod.Key()
-    mouse = libtcod.Mouse()
+    key = tcod.Key()
+    mouse = tcod.Mouse()
     # variable who hold our keyboard and mouse input
     game_state = GameStates.PLAYERS_TURN
     previous_game_state = game_state
     # for use after closing a menu and not losing a turn
     targeting_item = None
 
-    while not libtcod.console_is_window_closed():
+    while not tcod.console_is_window_closed():
         # game loop; won't end until we close the screen
 
-        libtcod.sys_check_for_event(
-            libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
+        tcod.sys_check_for_event(
+            tcod.EVENT_KEY_PRESS | tcod.EVENT_MOUSE, key, mouse)
         # will update key and mouse variables with the user inputs
 
         if fov_recompute:
@@ -43,7 +43,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
         fov_recompute = False
 
-        libtcod.console_flush()
+        tcod.console_flush()
         # puts everything on the screen
 
         clear_all(con, entities)
@@ -78,7 +78,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
                     if target.name == "NPC":
                         message_log.add_message(
-                            Message('hi bob', libtcod.yellow))
+                            Message('hi bob', tcod.yellow))
 
                     else:
                         attack_results = player.fighter.attack(target)
@@ -100,7 +100,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                     break
             else:
                 message_log.add_message(
-                    Message('There is nothing here to pick up.', libtcod.white))
+                    Message('There is nothing here to pick up.', tcod.white))
 
         if show_inventory:
             # need the if here to check otherwise you can get stuck in the inventory screen
@@ -133,7 +133,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             elif right_click:
                 player_turn_results.append({'targeting_cancelled': True})
                 message_log.add_message(
-                    Message('Targeting Cancelled', libtcod.fuchsia))
+                    Message('Targeting Cancelled', tcod.fuchsia))
         # refactor here to include a sure you want to quit?
 
         if exit:
@@ -143,13 +143,13 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             elif game_state == GameStates.TARGETING:
                 player_turn_results.append({'targeting_cancelled': True})
                 message_log.add_message(
-                    Message('Targeting Cancelled', libtcod.fuchsia))
+                    Message('Targeting Cancelled', tcod.fuchsia))
             else:
                 save_game(player, entities, game_map, message_log, game_state)
                 return True
 
         if fullscreen:
-            libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
+            tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
 
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
@@ -234,17 +234,17 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 def main():
     constants = get_constants()
 
-    libtcod.console_set_custom_font(
-        'arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+    tcod.console_set_custom_font(
+        'arial10x10.png', tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
     # telling which font to use 'arial10x10' is the actual file we are importing, the other two are telling which type of file we are reading in this case a greyscale file with TCOD layout
 
-    libtcod.console_init_root(constants['screen_width'],
-                              constants['screen_height'], 'X-ZOM', False)
+    tcod.console_init_root(constants['screen_width'],
+                           constants['screen_height'], 'X-ZOM', False)
     # creates the screen from width and height, with title and whether to go fullscreen or not
 
-    con = libtcod.console_new(
+    con = tcod.console_new(
         constants['screen_width'], constants['screen_height'])
-    panel = libtcod.console_new(
+    panel = tcod.console_new(
         constants['screen_width'], constants['panel_height'])
 
     player = None
@@ -256,14 +256,14 @@ def main():
     show_main_menu = True
     show_load_error_message = False
 
-    main_menu_background_image = libtcod.image_load('menu_background1.png')
+    main_menu_background_image = tcod.image_load('menu_background1.png')
 
-    key = libtcod.Key()
-    mouse = libtcod.Mouse()
+    key = tcod.Key()
+    mouse = tcod.Mouse()
 
-    while not libtcod.console_is_window_closed():
-        libtcod.sys_check_for_event(
-            libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
+    while not tcod.console_is_window_closed():
+        tcod.sys_check_for_event(
+            tcod.EVENT_KEY_PRESS | tcod.EVENT_MOUSE, key, mouse)
 
         if show_main_menu:
             main_menu(con, main_menu_background_image,
@@ -273,7 +273,7 @@ def main():
                 message_box(con, 'No save game to load', 50,
                             constants['screen_width'], constants['screen_height'])
 
-            libtcod.console_flush()
+            tcod.console_flush()
 
             action = handle_main_menu(key)
 
@@ -299,7 +299,7 @@ def main():
                 break
 
         else:
-            libtcod.console_clear(con)
+            tcod.console_clear(con)
             play_game(player, entities, game_map, message_log,
                       game_state, con, panel, constants)
 

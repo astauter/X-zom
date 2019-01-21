@@ -1,4 +1,4 @@
-import libtcodpy as libtcod
+import tcod as tcod
 from random import randint
 
 from components.ai import BasicMonster
@@ -115,19 +115,19 @@ class GameMap:
                     fighter_component = Fighter(hp=10, defense=0, power=3)
                     ai_component = BasicMonster()
 
-                    monster = Entity(x, y, 'o', libtcod.desaturated_green, 'Orc',
+                    monster = Entity(x, y, 'o', tcod.desaturated_green, 'Orc',
                                      blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
 
                 elif num > 50 and num < 80:
                     monster = Entity(
-                        x, y, 'N', libtcod.light_yellow, "NPC", blocks=True, render_order=RenderOrder.ACTOR)
+                        x, y, 'N', tcod.light_yellow, "NPC", blocks=True, render_order=RenderOrder.ACTOR)
 
                 else:
                     fighter_component = Fighter(hp=16, defense=1, power=4)
                     ai_component = BasicMonster()
 
                     monster = Entity(
-                        x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+                        x, y, 'T', tcod.darker_green, 'Troll', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
 
                 entities.append(monster)
 
@@ -139,26 +139,26 @@ class GameMap:
                 num = randint(0, 100)
                 if num < 30:
                     item_component = Item(use_function=heal, amount=4)
-                    item = Entity(x, y, '!', libtcod.violet,
+                    item = Entity(x, y, '!', tcod.violet,
                                   'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
                 elif num >= 30 and num < 50:
                     item_component = Item(use_function=cast_confuse, targeting=True, targeting_message=Message(
-                        'Left-click an enemy to confuse it, or right-click to cancel.', libtcod.light_blue))
-                    item = Entity(x, y, '#', libtcod.light_pink, 'Confusion Scroll',
+                        'Left-click an enemy to confuse it, or right-click to cancel.', tcod.light_blue))
+                    item = Entity(x, y, '#', tcod.light_pink, 'Confusion Scroll',
                                   render_order=RenderOrder.ITEM, item=item_component)
                 elif num >= 50 and num < 65:
                     item_component = Item(use_function=gain_attack, amount=1)
-                    item = Entity(x, y, 'a', libtcod.red, 'Attack Potion',
+                    item = Entity(x, y, 'a', tcod.red, 'Attack Potion',
                                   render_order=RenderOrder.ITEM, item=item_component)
                 elif num >= 65 and num < 90:
                     item_component = Item(
                         use_function=cast_lightning, damage=20, maximum_range=5)
-                    item = Entity(x, y, 'L', libtcod.yellow,
+                    item = Entity(x, y, 'L', tcod.yellow,
                                   'Lightning Scroll', render_order=RenderOrder.ITEM, item=item_component)
                 else:
                     item_component = Item(
-                        use_function=cast_fireball, targeting=True, targeting_message=Message('Lef-click a target tile for the fireball, or right-click to cancel.', libtcod.white), damage=12, radius=3)
-                    item = Entity(x, y, '#', libtcod.red, 'Fireball',
+                        use_function=cast_fireball, targeting=True, targeting_message=Message('Lef-click a target tile for the fireball, or right-click to cancel.', tcod.white), damage=12, radius=3)
+                    item = Entity(x, y, '#', tcod.red, 'Fireball',
                                   render_order=RenderOrder.ITEM, item=item_component)
 
                 entities.append(item)

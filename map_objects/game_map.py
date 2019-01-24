@@ -127,7 +127,8 @@ class GameMap:
                 # if no monster is there we put a troll or an orc
                 num = randint(0, 100)
                 if num < 50:
-                    fighter_component = Fighter(hp=10, defense=0, power=3)
+                    fighter_component = Fighter(
+                        hp=10, defense=0, power=3, xp=35)
                     ai_component = BasicMonster()
 
                     monster = Entity(x, y, 'o', tcod.desaturated_green, 'Orc',
@@ -138,7 +139,8 @@ class GameMap:
                         x, y, 'N', tcod.light_yellow, "NPC", blocks=True, render_order=RenderOrder.ACTOR)
 
                 else:
-                    fighter_component = Fighter(hp=16, defense=1, power=4)
+                    fighter_component = Fighter(
+                        hp=16, defense=1, power=4, xp=100)
                     ai_component = BasicMonster()
 
                     monster = Entity(

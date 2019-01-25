@@ -47,6 +47,8 @@ def handle_player_turn_keys(key):
         return {'move': (-1, 1)}
     elif key_char == 'c':
         return {'move': (1, 1)}
+    elif key_char == 't':
+        return {'wait': True}
     # returns an object/dictionary  if we hit more then one key at a time for the engine to process
 
     if key_char == 'g':

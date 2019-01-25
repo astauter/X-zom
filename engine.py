@@ -62,6 +62,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         show_character_screen = action.get('show_character_screen')
         exit = action.get('exit')
         fullscreen = action.get('fullscreen')
+        wait = action.get('wait')
 
         left_click = mouse_action.get('left_click')
         right_click = mouse_action.get('right_click')
@@ -93,6 +94,9 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                     fov_recompute = True
 
                 game_state = GameStates.ENEMY_TURN
+
+        elif wait:
+            game_state = GameStates.ENEMY_TURN
 
         elif pickup and game_state == GameStates.PLAYERS_TURN:
             for entity in entities:

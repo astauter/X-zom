@@ -1,4 +1,4 @@
-import libtcodpy as libtcod
+import tcod as tcod
 import math
 from utility_func import distance_to
 
@@ -11,7 +11,7 @@ class Entity:
     """
     # refactor all of these extra functions on entity, items don't need move functions for instance
 
-    def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None):
+    def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None, stairs=None, level=None):
         self.x = x
         self.y = y
         self.char = char
@@ -23,6 +23,8 @@ class Entity:
         self.ai = ai
         self.item = item
         self.inventory = inventory
+        self.stairs = stairs
+        self.level = level
 
         if self.fighter:
             self.fighter.owner = self
@@ -35,6 +37,12 @@ class Entity:
 
         if self.inventory:
             self.inventory.owner = self
+
+        if self.stairs:
+            self.stairs.owner = self
+
+        if self.level:
+            self.level.owner = self
 
     def move(self, dx, dy):
         # move the entity by a given amount
@@ -56,12 +64,12 @@ class Entity:
     # pathfinding algo using A* method will need to look through later
     def move_astar(self, target, entities, game_map):
         # create a FOV map that has the dimensions of the map
-        fov = libtcod.map_new(game_map.width, game_map.height)
+        fov = tcod.map_new(game_map.width, game_map.height)
 
         # scan the current map each turn and set all the walls as unwalkable
         for y1 in range(game_map.height):
             for x1 in range(game_map.width):
-                libtcod.map_set_properties(
+                tcod.map_set_properties(
                     fov, x1, y1, not game_map.tiles[x1][y1].block_sight, not game_map.tiles[x1][y1].blocked)
 
         # Scan all the objects to see if there are objects that must be navigated around, check that the object is self or target(so that start and end points are free)
@@ -69,22 +77,22 @@ class Entity:
         for entity in entities:
             if entity.blocks and entity != self and entity != target:
                 # set tile as a wall so it must be navigated around
-                libtcod.map_set_properties(
+                tcod.map_set_properties(
                     fov, entity.x, entity.y, True, False)
 
         # Allocate an A* path
         # 1.41 is the normal diagonal cost of moving, can be set to 0 if diagonal moves are prohibited
-        my_path = libtcod.path_new_using_map(fov, 1.41)
+        my_path = tcod.path_new_using_map(fov, 1.41)
 
         # compute the path between selfs coordinates and the target's coordinates
-        libtcod.path_compute(my_path, self.x, self.y, target.x, target.y)
+        tcod.path_compute(my_path, self.x, self.y, target.x, target.y)
 
         # Check if the path exists and is shorter then 25 tiles
         # The path size matters if you want the monster to use alternative longer paths (for example through other rooms) if for example the player is in a corridor
         # It makes sense to keep path size relatively low to keep the monsters from running around the map if there's an alternative path really far away
-        if not libtcod.path_is_empty(my_path) and libtcod.path_size(my_path) < 25:
+        if not tcod.path_is_empty(my_path) and tcod.path_size(my_path) < 25:
             # find the next coordinates in the computed full path
-            x, y = libtcod.path_walk(my_path, True)
+            x, y = tcod.path_walk(my_path, True)
             if x or y:
                 # set self's coordinates to the next path tile
                 self.x = x
@@ -96,7 +104,7 @@ class Entity:
             self.move_towards(target.x, target.y, game_map, entities)
 
             # delete path to free memory
-        libtcod.path_delete(my_path)
+        tcod.path_delete(my_path)
 
     def distance(self, x, y):
         return distance_to(x, self.x, y, self.y)

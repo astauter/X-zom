@@ -1,2 +1,7 @@
 *.pyc
-*.dll
+env
+*.dat
+*.dir
+*.bak
+*.vscode
+savegame

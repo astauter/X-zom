@@ -1,14 +1,15 @@
-import libtcodpy as libtcod
+import tcod as tcod
 
 from game_messages import Message
 
 
 class Fighter:
-    def __init__(self, hp, defense, power):
+    def __init__(self, hp, defense, power, xp=0):
         self.max_hp = hp
         self.hp = hp
         self.defense = defense
         self.power = power
+        self.xp = xp
 
     def take_damage(self, amount):
         results = []
@@ -19,7 +20,7 @@ class Fighter:
             self.hp = 0
 
         if self.hp == 0:
-            results.append({'dead': self.owner})
+            results.append({'dead': self.owner, 'xp': self.xp})
 
         return results
 
@@ -39,15 +40,15 @@ class Fighter:
 
         if damage > 0:
             results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(
-                self.owner.name.capitalize(), target.name, str(damage)), libtcod.white)})
+                self.owner.name.capitalize(), target.name, str(damage)), tcod.white)})
             results.extend(target.fighter.take_damage(damage))
             # extend is a nice python function that keeps arrays flat
 
         else:
             results.append({'message': Message('{0} attacks {1} but does no damage.'.format(
-                self.owner.name.capitalize(), target.name), libtcod.white)})
+                self.owner.name.capitalize(), target.name), tcod.white)})
 
         return results
 
     def __repr__(self):
-        return f'Fighter: hp = {self.hp}, defense = {self.defense}, power = {self.power}'
+        return f'Fighter: hp = {self.hp}, defense = {self.defense}, power = {self.power}, xp = {self.xp}'

@@ -1,6 +1,0 @@
-autopep8==1.4.3
-cffi==1.11.5
-numpy==1.16.0
-pycodestyle==2.4.0
-pycparser==2.19
-tcod==8.3.2

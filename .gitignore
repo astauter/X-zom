@@ -4,4 +4,4 @@ env
 *.dir
 *.bak
 *.vscode
-savegame
+save_game

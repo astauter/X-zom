@@ -150,7 +150,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 player.fighter.hp += 20
             elif level_up == 'str':
                 player.fighter.power += 3
-            elif leve_up == 'def':
+            elif level_up == 'def':
                 player.fighter.defense += 1
 
             game_state = previous_game_state

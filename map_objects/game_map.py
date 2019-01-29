@@ -16,7 +16,7 @@ from map_objects.tile import Tile
 from map_objects.rectangle import Rect
 from render_functions import RenderOrder
 
-from utility_func import random_choice_from_dict
+from utility_func import from_dungeon_level, random_choice_from_dict
 
 
 class GameMap:
@@ -35,7 +35,7 @@ class GameMap:
 
         return tiles
 
-    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room):
+    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities):
         rooms = []
         num_rooms = 0
 
@@ -84,8 +84,7 @@ class GameMap:
                         self.create_v_tunnel(prev_y, new_y, prev_x)
                         self.create_h_tunnel(prev_x, new_x, new_y)
 
-                self.place_entities(new_room, entities,
-                                    max_monsters_per_room, max_items_per_room)
+                self.place_entities(new_room, entities)
 
                 # add the new room to our list/array
                 rooms.append(new_room)
@@ -114,15 +113,27 @@ class GameMap:
             self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
 
-    def place_entities(self, room, entities, max_monsters_per_room, max_items_per_room):
-        # get random # of monsters
+    def place_entities(self, room, entities):
+        max_monsters_per_room = from_dungeon_level(
+            [[2, 1], [3, 4], [5, 6]], self.dungeon_level)
+        max_items_per_room = from_dungeon_level(
+            [[1, 1], [2, 4]], self.dungeon_level)
         number_of_monsters = randint(0, max_monsters_per_room)
         number_of_items = randint(0, max_items_per_room)
 
-        monster_chances = {'orc': 80, 'troll': 20}
-        item_chances = {'healing_potion': 65, 'lightning_scroll': 10,
-                        'fireball_scroll': 10, 'attack_potion': 5,
-                        'confusion_scroll': 10}
+        # refactor here for better input. Looks extremely gross something like you put in level and percent cleanly and it creates a table for you.
+        monster_chances = {
+            'orc': 80,
+            'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level)
+        }
+
+        item_chances = {
+            'healing_potion': 35,
+            'attack_potion': 2,
+            'lightning_scroll': from_dungeon_level([[25, 4]], self.dungeon_level),
+            'fireball_scroll': from_dungeon_level([[25, 6]], self.dungeon_level),
+            'confusion_scroll': from_dungeon_level([[10, 2]], self.dungeon_level)
+        }
         # npc_chances = {'NPC': 15}
 
         for i in range(number_of_monsters):
@@ -210,7 +221,7 @@ class GameMap:
 
         self.tiles = self.initialize_tiles()
         self.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'], constants['map_width'],
-                      constants['map_height'], player, entities, constants['max_monsters_per_room'], constants['max_items_per_room'])
+                      constants['map_height'], player, entities)
 
         player.fighter.heal(player.fighter.max_hp // 2)
         message_log.add_message(

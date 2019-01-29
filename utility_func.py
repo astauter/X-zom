@@ -26,3 +26,11 @@ def random_choice_from_dict(choice_dict):
     chances = list(choice_dict.values())
 
     return choices[random_choice_index(chances)]
+
+
+def from_dungeon_level(table, dungeon_level):
+    for (value, level) in reversed(table):
+        if dungeon_level >= level:
+            return value
+
+    return 0

@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "*"
 
 [packages]
 autopep8 = "==1.4.3"
@@ -12,6 +13,7 @@ numpy = "==1.16.0"
 pycodestyle = "==2.4.0"
 pycparser = "==2.19"
 tcod = "==8.3.2"
+dill = "*"
 
 [requires]
 python_version = "3.7"

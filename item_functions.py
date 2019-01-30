@@ -36,8 +36,7 @@ def gain_attack(*args, **kwargs):
     return results
 
 
-def cast_lightning(*args, **kwargs):
-    caster = args[0]
+def cast_lightning(caster, game_map, *args, **kwargs):
     entities = kwargs.get('entities')
     fov_map = kwargs.get('fov_map')
     damage = kwargs.get('damage')
@@ -58,8 +57,11 @@ def cast_lightning(*args, **kwargs):
 
     if target:
         results.append({'consumed': True, 'target': target,
-                        'message': Message(f'A lightning bolt strikes the {target.name} with a loud thunder! The damage is {damage}')})
+                        'message': Message(f'A lightning bolt strikes the {target.name} with a loud crash and scorches the ground! The damage is {damage}')})
         results.extend(target.fighter.take_damage(damage))
+        burned_tile = game_map.tiles[target.x][target.y]
+        burned_tile.burned = True
+        results.append({'force_recompute': True})
     else:
         results.append({'consumed': False, 'target': None,
                         'message': Message('No enemy is in range')})

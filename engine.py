@@ -125,7 +125,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             if game_state == GameStates.SHOW_INVENTORY:
                 # (question)why not **kwargs here?
                 player_turn_results.extend(player.inventory.use(
-                    item, entities=entities, fov_map=fov_map))
+                    item, game_map, entities=entities, fov_map=fov_map))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop_item(item))
 

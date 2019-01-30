@@ -147,7 +147,7 @@ class GameMap:
 
                 if monster_choice == 'orc':
                     fighter_component = Fighter(
-                        hp=10, defense=0, power=3, xp=35)
+                        hp=20, defense=0, power=4, xp=35)
                     ai_component = BasicMonster()
 
                     monster = Entity(x, y, 'o', tcod.desaturated_green, 'Orc',
@@ -155,7 +155,7 @@ class GameMap:
 
                 else:
                     fighter_component = Fighter(
-                        hp=16, defense=1, power=4, xp=100)
+                        hp=30, defense=2, power=8, xp=100)
                     ai_component = BasicMonster()
 
                     monster = Entity(
@@ -175,7 +175,7 @@ class GameMap:
                 item_choice = random_choice_from_dict(item_chances)
 
                 if item_choice == 'healing_potion':
-                    item_component = Item(use_function=heal, amount=4)
+                    item_component = Item(use_function=heal, amount=20)
                     item = Entity(x, y, '!', tcod.violet,
                                   'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
                 if item_choice == 'confusion_scroll':
@@ -185,16 +185,16 @@ class GameMap:
                                   render_order=RenderOrder.ITEM, item=item_component)
                 if item_choice == 'attack_potion':
                     item_component = Item(use_function=gain_attack, amount=1)
-                    item = Entity(x, y, 'a', tcod.red, 'Attack Potion',
+                    item = Entity(x, y, '!', tcod.red, 'Attack Potion',
                                   render_order=RenderOrder.ITEM, item=item_component)
                 if item_choice == 'lightning_scroll':
                     item_component = Item(
-                        use_function=cast_lightning, damage=20, maximum_range=5)
-                    item = Entity(x, y, 'L', tcod.yellow,
+                        use_function=cast_lightning, damage=40, maximum_range=5)
+                    item = Entity(x, y, '#', tcod.yellow,
                                   'Lightning Scroll', render_order=RenderOrder.ITEM, item=item_component)
                 if item_choice == 'fireball_scroll':
                     item_component = Item(
-                        use_function=cast_fireball, targeting=True, targeting_message=Message('Lef-click a target tile for the fireball, or right-click to cancel.', tcod.white), damage=12, radius=3)
+                        use_function=cast_fireball, targeting=True, targeting_message=Message('Left-click a target tile for the fireball, or right-click to cancel.', tcod.white), damage=25, radius=3)
                     item = Entity(x, y, '#', tcod.red, 'Fireball',
                                   render_order=RenderOrder.ITEM, item=item_component)
 

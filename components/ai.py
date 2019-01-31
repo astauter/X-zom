@@ -6,6 +6,9 @@ from game_messages import Message
 
 
 class BasicMonster:
+    def __init__(self, owner=None):
+        self.owner = owner
+
     def take_turn(self, target, fov_map, game_map, entities):
         results = []
         monster = self.owner
@@ -26,9 +29,10 @@ class BasicMonster:
 
 
 class ConfusedMonster:
-    def __init__(self, previous_ai, number_of_turns=10):
+    def __init__(self, previous_ai, number_of_turns=10, owner=None):
         self.previous_ai = previous_ai
         self.number_of_turns = number_of_turns
+        self.owner = owner
 
     def take_turn(self, target, fov_map, game_map, entities):
         results = []

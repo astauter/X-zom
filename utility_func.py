@@ -34,3 +34,11 @@ def from_dungeon_level(table, dungeon_level):
             return value
 
     return 0
+
+
+def bonus_amount(bonus, equipped, stat_bonus):
+    for equipment in equipped:
+        if equipment and equipment.equippable:
+            bonus += equipment.equippable[stat_bonus]
+
+    return bonus

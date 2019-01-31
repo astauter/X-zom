@@ -2,6 +2,8 @@ import tcod as tcod
 from random import randint
 
 from components.ai import BasicMonster
+from components.equipment import EquipmentSlots
+from components.equippable import Equippable
 from components.fighter import Fighter
 from components.item import Item
 from components.stairs import Stairs
@@ -121,7 +123,8 @@ class GameMap:
         number_of_monsters = randint(0, max_monsters_per_room)
         number_of_items = randint(0, max_items_per_room)
 
-        # refactor here for better input. Looks extremely gross something like you put in level and percent cleanly and it creates a table for you.
+        # refactor here for better input. Looks extremely gross. something like you put in level and percent cleanly and it creates a table for you
+        # refactor allow monsters to  have equipment you can loot
         monster_chances = {
             'orc': 80,
             'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level)
@@ -132,7 +135,12 @@ class GameMap:
             'attack_potion': 2,
             'lightning_scroll': from_dungeon_level([[25, 4]], self.dungeon_level),
             'fireball_scroll': from_dungeon_level([[25, 6]], self.dungeon_level),
-            'confusion_scroll': from_dungeon_level([[10, 2]], self.dungeon_level)
+            'confusion_scroll': from_dungeon_level([[10, 2]], self.dungeon_level),
+            'sword': from_dungeon_level([[5, 4]], self.dungeon_level),
+            'shield': from_dungeon_level([[15, 8]], self.dungeon_level),
+            'ring_of_agility': from_dungeon_level([[10, 5]], self.dungeon_level),
+            'amulet_of_health': from_dungeon_level([[5, 2]], self.dungeon_level),
+            'chainmail': from_dungeon_level([[5, 2]], self.dungeon_level)
         }
         # npc_chances = {'NPC': 15}
 
@@ -147,7 +155,7 @@ class GameMap:
 
                 if monster_choice == 'orc':
                     fighter_component = Fighter(
-                        hp=20, defense=0, power=4, xp=35)
+                        hp=14, defense=0, power=4, xp=40)
                     ai_component = BasicMonster()
 
                     monster = Entity(x, y, 'o', tcod.desaturated_green, 'Orc',
@@ -197,6 +205,31 @@ class GameMap:
                         use_function=cast_fireball, targeting=True, targeting_message=Message('Left-click a target tile for the fireball, or right-click to cancel.', tcod.white), damage=25, radius=3)
                     item = Entity(x, y, '#', tcod.red, 'Fireball',
                                   render_order=RenderOrder.ITEM, item=item_component)
+                if item_choice == 'sword':
+                    equippable_component = Equippable(
+                        EquipmentSlots.MAIN_HAND, power_bonus=3)
+                    item = Entity(x, y, '/', tcod.sky, 'Sword',
+                                  equippable=equippable_component)
+                if item_choice == 'shield':
+                    equippable_component = Equippable(
+                        EquipmentSlots.OFF_HAND, defense_bonus=1)
+                    item = Entity(x, y, '+', tcod.darker_orange,
+                                  'shield', equippable=equippable_component)
+                if item_choice == 'ring_of_agility':
+                    equippable_component = Equippable(
+                        EquipmentSlots.RING, defense_bonus=1)
+                    item = Entity(
+                        x, y, 'o', tcod.silver, 'Ring of Agility', equippable=equippable_component)
+                if item_choice == 'amulet_of_health':
+                    equippable_component = Equippable(
+                        EquipmentSlots.AMULET, max_hp_bonus=30)
+                    item = Entity(
+                        x, y, 'v', tcod.gold,  "Amulet of Health", equippable=equippable_component)
+                if item_choice == 'chainmail':
+                    equippable_component = Equippable(
+                        EquipmentSlots.ARMOR, defense_bonus=2)
+                    item = Entity(x, y, 'A', tcod.light_gray,
+                                  "chainmail", equippable=equippable_component)
 
                 entities.append(item)
 

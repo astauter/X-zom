@@ -63,7 +63,18 @@ class Inventory:
     def drop_item(self, item):
         results = []
 
-        if self.owner.equipment.main_hand == item or self.owner.equipment.off_hand == item:
+        # refactor
+        if self.owner.equipment.main_hand == item:
+            self.owner.equipment.toggle_equip(item)
+        if self.owner.equipment.off_hand == item:
+            self.owner.equipment.toggle_equip(item)
+        if self.owner.equipment.helmet == item:
+            self.owner.equipment.toggle_equip(item)
+        if self.owner.equipment.armor == item:
+            self.owner.equipment.toggle_equip(item)
+        if self.owner.equipment.amulet == item:
+            self.owner.equipment.toggle_equip(item)
+        if self.owner.equipment.ring == item:
             self.owner.equipment.toggle_equip(item)
 
         item.x = self.owner.x

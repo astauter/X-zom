@@ -59,7 +59,7 @@ class Fighter:
             self.hp = self.max_hp
 
     def gain_attack(self, amount):
-        self.power += amount
+        self.base_power += amount
 
     def attack(self, target):
         results = []

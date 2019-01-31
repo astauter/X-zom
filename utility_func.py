@@ -36,9 +36,9 @@ def from_dungeon_level(table, dungeon_level):
     return 0
 
 
-def bonus_amount(bonus, equipped, stat_bonus):
+def stat_bonus(bonus, equipped, attribute):
     for equipment in equipped:
-        if equipment and equipment.equippable:
-            bonus += equipment.equippable[stat_bonus]
+        boosted_stat = getattr(equipment, attribute)
+        bonus += boosted_stat
 
     return bonus

@@ -1,5 +1,5 @@
 from equipment_slots import EquipmentSlots
-from utility_func import stat_bonus
+from utility.equipment_utility_func import stat_bonus
 
 
 class Equipment:
@@ -36,7 +36,6 @@ class Equipment:
 
         return bonus
 
-    # refactor
     def toggle_equip(self, equippable_entity):
         results = []
 

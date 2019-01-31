@@ -18,7 +18,7 @@ from map_objects.tile import Tile
 from map_objects.rectangle import Rect
 from render_functions import RenderOrder
 
-from utility_func import from_dungeon_level, random_choice_from_dict
+from utility.utility_func import from_dungeon_level, random_choice_from_dict
 
 
 class GameMap:
@@ -123,8 +123,6 @@ class GameMap:
         number_of_monsters = randint(0, max_monsters_per_room)
         number_of_items = randint(0, max_items_per_room)
 
-        # refactor here for better input. Looks extremely gross. something like you put in level and percent cleanly and it creates a table for you
-        # refactor allow monsters to  have equipment you can loot
         monster_chances = {
             'orc': 80,
             'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level)

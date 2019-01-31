@@ -1,7 +1,5 @@
 import tcod as tcod
 
-# return here to refactor
-
 
 def menu(con, header, options, width, screen_width, screen_height):
     if len(options) > 26:
@@ -20,7 +18,6 @@ def menu(con, header, options, width, screen_width, screen_height):
     tcod.console_print_rect_ex(
         window, 0, 0, width, height, tcod.BKGND_NONE, tcod.LEFT, header)
 
-    # refactor
     # print all the options
     y = header_height
     letter_index = ord('a')

@@ -82,8 +82,6 @@ def handle_player_turn_keys(key):
 def handle_player_dead_keys(key):
     key_char = chr(key.c)
 
-    # refactor to reset on death
-
     if key_char == 'i':
         return {'show_inventory': True}
 

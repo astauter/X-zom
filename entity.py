@@ -1,6 +1,6 @@
 import tcod as tcod
 import math
-from utility_func import distance_to
+from utility.utility_func import distance_to
 
 from components.item import Item
 
@@ -11,7 +11,6 @@ class Entity:
     """
     A generic object to represent players, enemies, items, etc. Holds the coordinates, the character('@'), and color.
     """
-    # refactor all of these extra functions on entity, items don't need move functions for instance
 
     def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None, stairs=None, level=None, equipment=None, equippable=None):
         self.x = x

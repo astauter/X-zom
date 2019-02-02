@@ -61,10 +61,13 @@ class Fighter:
     def gain_attack(self, amount):
         self.base_power += amount
 
-    def attack(self, target):
+    def attack(self, target, alt_attack=None):
         results = []
 
         damage = self.power - target.fighter.defense
+
+        if alt_attack:
+            damage = alt_attack - target.fighter.defense
 
         if damage > 0:
             results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(

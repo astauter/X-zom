@@ -52,6 +52,28 @@ class RangedMonster:
         return results
 
 
+class HunterMonster:
+    def __init__(self, attack_range, alt_attack, owner=None):
+        self.attack_range = attack_range
+        self.alt_attack = alt_attack
+        self.owner = owner
+
+    def take_turn(self, target, fov_map, game_map, entities):
+        results = []
+        monster = self.owner
+
+        if monster.distance_to(target) >= 2 and monster.distance_to(target) <= self.attack_range and target.fighter.hp > 0:
+            attack_results = monster.fighter.attack(target, self.alt_attack)
+            results.extend(attack_results)
+        elif monster.distance_to(target) < 2 and target.fighter.hp > 0:
+            attack_results = monster.fighter.attack(target)
+            results.extend(attack_results)
+        else:
+            monster.move_astar(target, entities, game_map)
+
+        return results
+
+
 class ConfusedMonster:
     def __init__(self, previous_ai, number_of_turns=10, owner=None):
         self.previous_ai = previous_ai

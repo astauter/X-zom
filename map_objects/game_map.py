@@ -1,7 +1,7 @@
 import tcod as tcod
 from random import randint
 
-from components.ai import BasicMonster, RangedMonster
+from components.ai import BasicMonster, RangedMonster, HunterMonster
 from components.equipment import EquipmentSlots
 from components.equippable import Equippable
 from components.fighter import Fighter
@@ -98,7 +98,7 @@ class GameMap:
         entities.append(down_stairs)
 
     def create_room(self, room):
-        # go through the tiles in the created rectangle and make them passagble
+        # go through the tiles in the created rectangle and make them passable
         for x in range(room.x1 + 1, room.x2):
             for y in range(room.y1 + 1, room.y2):
                 self.tiles[x][y].blocked = False
@@ -123,12 +123,11 @@ class GameMap:
         number_of_monsters = randint(0, max_monsters_per_room)
         number_of_items = randint(0, max_items_per_room)
 
-        # refactor here for better input. Looks extremely gross. something like you put in level and percent cleanly and it creates a table for you
-        # refactor allow monsters to  have equipment you can loot
         monster_chances = {
             'orc': 80,
             'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level),
-            'archer': from_dungeon_level([[10, 1], [20, 3]], self.dungeon_level)
+            'archer': from_dungeon_level([[10, 1], [20, 3]], self.dungeon_level),
+            'hunter': from_dungeon_level([[3, 3], [5, 4], [8, 5], [10, 7]], self.dungeon_level)
         }
 
         item_chances = {
@@ -178,6 +177,14 @@ class GameMap:
                     monster = Entity(x, y, 'a', tcod.darker_green, 'Goblin Archer', blocks=True,
                                      render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
 
+                if monster_choice == 'hunter':
+                    fighter_component = Fighter(
+                        hp=40, defense=2, power=10, xp=250)
+                    ai_component = HunterMonster(5, 6)
+
+                    monster = Entity(x, y, 'H', tcod.dark_flame, 'Hunter', blocks=True,
+                                     render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+
                 entities.append(monster)
 
                 '''elif num > 50 and num < 80:
@@ -192,7 +199,7 @@ class GameMap:
                 item_choice = random_choice_from_dict(item_chances)
 
                 if item_choice == 'healing_potion':
-                    item_component = Item(use_function=heal, amount=20)
+                    item_component = Item(use_function=heal, amount=30)
                     item = Entity(x, y, '!', tcod.violet,
                                   'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
                 if item_choice == 'confusion_scroll':

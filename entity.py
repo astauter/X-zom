@@ -76,6 +76,13 @@ class Entity:
                 get_blocking_entities_at_location(entities, self.x + dx, self.y + dy)):
             self.move(dx, dy)
 
+    def move_away(self, target_x, target_y, game_map, entities):
+        dx = (target_x - self.x) * -1
+        dy = (target_y - self.y) * -1
+
+        if not (game_map.is_blocked(self.x + dx, self.y + dy) or get_blocking_entities_at_location(entities, self.x + dx, self.y + dy)):
+            self.move(dx, dy)
+
     # pathfinding algo using A* method will need to look through later
     def move_astar(self, target, entities, game_map):
         # create a FOV map that has the dimensions of the map

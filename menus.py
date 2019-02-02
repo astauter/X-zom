@@ -97,9 +97,8 @@ def character_screen(player, character_screen_width, character_screen_height, sc
     tcod.console_print_rect_ex(window, 0, 2, character_screen_width, character_screen_height,
                                tcod.BKGND_NONE, tcod.LEFT, f'Level: {player.level.current_level}')
     tcod.console_print_rect_ex(window, 0, 3, character_screen_width, character_screen_height,
-                               tcod.BKGND_NONE, tcod.LEFT, f'Experience: {player.level.current_xp}')
-    tcod.console_print_rect_ex(window, 0, 4, character_screen_width, character_screen_height, tcod.BKGND_NONE,
-                               tcod.LEFT, f'Experience to Level: {player.level.experience_to_next_level}')
+                               tcod.BKGND_NONE, tcod.LEFT, f'Experience to Level Up: {player.level.experience_to_next_level - player.level.current_xp}')
+
     tcod.console_print_rect_ex(window, 0, 6, character_screen_width, character_screen_height,
                                tcod.BKGND_NONE, tcod.LEFT, f'Maximum HP: {player.fighter.max_hp}')
     tcod.console_print_rect_ex(window, 0, 7, character_screen_width, character_screen_height,

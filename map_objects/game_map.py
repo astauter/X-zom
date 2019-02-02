@@ -18,7 +18,7 @@ from map_objects.tile import Tile
 from map_objects.rectangle import Rect
 from render_functions import RenderOrder
 
-from utility_func import from_dungeon_level, random_choice_from_dict
+from utility.utility_func import from_dungeon_level, random_choice_from_dict
 
 
 class GameMap:

@@ -1,4 +1,4 @@
-from utility_func import distance_to
+from utility.utility_func import distance_to
 
 
 class Tile:

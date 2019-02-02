@@ -7,7 +7,6 @@ from game_states import GameStates
 
 
 class RenderOrder(Enum):
-    # refactor auto() function
     STAIRS = 1
     CORPSE = 2
     ITEM = 3

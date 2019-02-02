@@ -2,9 +2,9 @@ from enum import Enum
 
 
 class EquipmentSlots(Enum):
-    MAIN_HAND = 1
-    OFF_HAND = 2
-    HELMET = 3
-    ARMOR = 4
-    RING = 5
-    AMULET = 6
+    MAIN_HAND = 'main_hand'
+    OFF_HAND = 'off_hand'
+    HELMET = 'helmet'
+    ARMOR = 'armor'
+    RING = 'ring'
+    AMULET = 'amulet'

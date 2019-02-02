@@ -1,7 +1,7 @@
 import tcod as tcod
 from random import randint
 
-from components.ai import BasicMonster
+from components.ai import BasicMonster, RangedMonster
 from components.equipment import EquipmentSlots
 from components.equippable import Equippable
 from components.fighter import Fighter
@@ -127,7 +127,8 @@ class GameMap:
         # refactor allow monsters to  have equipment you can loot
         monster_chances = {
             'orc': 80,
-            'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level)
+            'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level),
+            'archer': from_dungeon_level([[10, 1], [20, 3]], self.dungeon_level)
         }
 
         item_chances = {
@@ -155,19 +156,27 @@ class GameMap:
 
                 if monster_choice == 'orc':
                     fighter_component = Fighter(
-                        hp=14, defense=0, power=4, xp=40)
+                        hp=20, defense=0, power=4, xp=40)
                     ai_component = BasicMonster()
 
                     monster = Entity(x, y, 'o', tcod.desaturated_green, 'Orc',
                                      blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
 
-                else:
+                if monster_choice == 'troll':
                     fighter_component = Fighter(
                         hp=30, defense=2, power=8, xp=100)
                     ai_component = BasicMonster()
 
                     monster = Entity(
                         x, y, 'T', tcod.darker_green, 'Troll', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+
+                if monster_choice == 'archer':
+                    fighter_component = Fighter(
+                        hp=12, defense=0, power=3, xp=50)
+                    ai_component = RangedMonster(4)
+
+                    monster = Entity(x, y, 'a', tcod.darker_green, 'Goblin Archer', blocks=True,
+                                     render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
 
                 entities.append(monster)
 

@@ -126,12 +126,12 @@ class GameMap:
         monster_chances = {
             'orc': 80,
             'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level),
-            'archer': from_dungeon_level([[10, 1], [20, 3]], self.dungeon_level),
+            'archer': from_dungeon_level([[10, 1], [20, 3], [30, 5]], self.dungeon_level),
             'hunter': from_dungeon_level([[3, 3], [5, 4], [8, 5], [10, 7]], self.dungeon_level)
         }
 
         item_chances = {
-            'healing_potion': 35,
+            'healing_potion': 28,
             'attack_potion': 2,
             'lightning_scroll': from_dungeon_level([[25, 4]], self.dungeon_level),
             'fireball_scroll': from_dungeon_level([[25, 6]], self.dungeon_level),
@@ -155,7 +155,7 @@ class GameMap:
 
                 if monster_choice == 'orc':
                     fighter_component = Fighter(
-                        hp=20, defense=0, power=4, xp=40)
+                        hp=20, defense=0, power=4, crit_chance=1, xp=40)
                     ai_component = BasicMonster()
 
                     monster = Entity(x, y, 'o', tcod.desaturated_green, 'Orc',
@@ -163,7 +163,7 @@ class GameMap:
 
                 if monster_choice == 'troll':
                     fighter_component = Fighter(
-                        hp=30, defense=2, power=8, xp=100)
+                        hp=30, defense=2, power=8, crit_chance=4, xp=100)
                     ai_component = BasicMonster()
 
                     monster = Entity(
@@ -171,7 +171,7 @@ class GameMap:
 
                 if monster_choice == 'archer':
                     fighter_component = Fighter(
-                        hp=12, defense=0, power=3, xp=50)
+                        hp=12, defense=0, power=3, crit_chance=2, xp=50)
                     ai_component = RangedMonster(4)
 
                     monster = Entity(x, y, 'a', tcod.darker_green, 'Goblin Archer', blocks=True,
@@ -179,7 +179,7 @@ class GameMap:
 
                 if monster_choice == 'hunter':
                     fighter_component = Fighter(
-                        hp=40, defense=2, power=10, xp=250)
+                        hp=50, defense=2, power=10, crit_chance=5, xp=250)
                     ai_component = HunterMonster(5, 6)
 
                     monster = Entity(x, y, 'H', tcod.dark_flame, 'Hunter', blocks=True,
@@ -199,7 +199,7 @@ class GameMap:
                 item_choice = random_choice_from_dict(item_chances)
 
                 if item_choice == 'healing_potion':
-                    item_component = Item(use_function=heal, amount=30)
+                    item_component = Item(use_function=heal, amount=25)
                     item = Entity(x, y, '!', tcod.violet,
                                   'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
                 if item_choice == 'confusion_scroll':

@@ -34,3 +34,10 @@ def from_dungeon_level(table, dungeon_level):
             return value
 
     return 0
+
+
+def is_critical(critical_chance):
+    random_chance = randint(1, 100)
+
+    if random_chance <= critical_chance:
+        return True

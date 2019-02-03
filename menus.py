@@ -75,7 +75,7 @@ def main_menu(con, background_image, screen_width, screen_height):
 
 def level_up_menu(con, header, player, menu_width, screen_width, screen_height):
     options = ['Constitution (+20 HP)',
-               'Strength (+3 attack)', 'Agility (+1 defense)']
+               'Strength (+2 attack)', 'Agility (+1 defense)', 'Perception (+4% Critical Hit)']
 
     menu(con, header, options, menu_width, screen_width, screen_height)
 
@@ -103,6 +103,8 @@ def character_screen(player, character_screen_width, character_screen_height, sc
                                tcod.BKGND_NONE, tcod.LEFT, f'Attack: {player.fighter.power}')
     tcod.console_print_rect_ex(window, 0, 8, character_screen_width, character_screen_height,
                                tcod.BKGND_NONE, tcod.LEFT, f'Defense: {player.fighter.defense}')
+    tcod.console_print_rect_ex(window, 0, 9, character_screen_width, character_screen_height,
+                               tcod.BKGND_NONE, tcod.LEFT, f'Critical Chance: {player.fighter.crit_chance}')
 
     x = screen_width // 2 - character_screen_width // 2
     y = screen_height // 2 - character_screen_height // 2

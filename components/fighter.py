@@ -1,15 +1,17 @@
 import tcod as tcod
 
 from game_messages import Message
+from utility.utility_func import is_critical
 
 
 class Fighter:
-    def __init__(self, hp, defense, power, xp=0, owner=None):
+    def __init__(self, hp, defense, power, crit_chance=0, xp=0, owner=None):
         self.base_max_hp = hp
         self.hp = hp
         self.base_defense = defense
         self.base_power = power
         self.xp = xp
+        self.crit_chance = crit_chance
         self.owner = owner
 
     @property
@@ -63,17 +65,23 @@ class Fighter:
 
     def attack(self, target, alt_attack=None):
         results = []
+        is_crit = is_critical(self.crit_chance)
 
         damage = self.power - target.fighter.defense
+
+        if is_crit:
+            damage = int(damage * 1.5)
 
         if alt_attack:
             damage = alt_attack - target.fighter.defense
 
-        if damage > 0:
+        if damage > 0 and not is_crit:
             results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(
                 self.owner.name.capitalize(), target.name, str(damage)), tcod.white)})
             results.extend(target.fighter.take_damage(damage))
-
+        elif damage > 0:
+            results.append({'message': Message(
+                f'{self.owner.name.capitalize()} attacks {target.name} with at Critical Hit!!! It does {str(damage)}!')})
         else:
             results.append({'message': Message('{0} attacks {1} but does no damage.'.format(
                 self.owner.name.capitalize(), target.name), tcod.white)})

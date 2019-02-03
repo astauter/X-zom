@@ -149,9 +149,11 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 player.fighter.base_max_hp += 20
                 player.fighter.hp += 20
             elif level_up == 'str':
-                player.fighter.base_power += 1
+                player.fighter.base_power += 2
             elif level_up == 'def':
                 player.fighter.base_defense += 1
+            elif level_up == 'crit_chance':
+                player.fighter.crit_chance += 4
 
             game_state = previous_game_state
 

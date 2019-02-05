@@ -1,11 +1,11 @@
 import tcod as tcod
 
 from game_messages import Message
-from utility.utility_func import is_critical
+from utility.attack_util_func import is_critical, damage_done
 
 
 class Fighter:
-    def __init__(self, hp, defense, power, crit_chance=0, xp=0, owner=None):
+    def __init__(self, hp, defense, power, crit_chance=0, xp=0, piercing_damage=None, owner=None):
         self.base_max_hp = hp
         self.hp = hp
         self.base_defense = defense
@@ -13,6 +13,8 @@ class Fighter:
         self.xp = xp
         self.crit_chance = crit_chance
         self.owner = owner
+        self.piercing_damage = piercing_damage
+        self.status = []
 
     @property
     def max_hp(self):
@@ -65,23 +67,27 @@ class Fighter:
 
     def attack(self, target, alt_attack=None):
         results = []
+        attack = self.power
+        defense = target.fighter.defense
         is_crit = is_critical(self.crit_chance)
-
-        damage = self.power - target.fighter.defense
-
-        if is_crit:
-            damage = int(damage * 1.5)
+        damage = damage_done(attack, defense, is_crit, self.piercing_damage)
 
         if alt_attack:
-            damage = alt_attack - target.fighter.defense
+            damage = damage_done(alt_attack, defense,
+                                 is_crit, self.piercing_damage)
 
-        if damage > 0 and not is_crit:
+        if damage and is_crit:
+            results.append({'message': Message(
+                f'{self.owner.name.capitalize()} attacks {target.name} with a Critical Hit!!! It does {str(damage)} points of damage!', tcod.light_flame)})
+            results.extend(target.fighter.take_damage(damage))
+        elif damage and self.piercing_damage:
+            results.append({'message': Message(
+                f'{self.owner.name.capitalize()} pierces the{target.name}\'s armor! It does {str(damage)} points of damage!')})
+            results.extend(target.fighter.take_damage(damage))
+        elif damage:
             results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(
                 self.owner.name.capitalize(), target.name, str(damage)), tcod.white)})
             results.extend(target.fighter.take_damage(damage))
-        elif damage > 0:
-            results.append({'message': Message(
-                f'{self.owner.name.capitalize()} attacks {target.name} with at Critical Hit!!! It does {str(damage)}!')})
         else:
             results.append({'message': Message('{0} attacks {1} but does no damage.'.format(
                 self.owner.name.capitalize(), target.name), tcod.white)})

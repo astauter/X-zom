@@ -171,7 +171,7 @@ class GameMap:
 
                 if monster_choice == 'archer':
                     fighter_component = Fighter(
-                        hp=12, defense=0, power=3, crit_chance=2, xp=50)
+                        hp=12, defense=0, power=3, crit_chance=2, piercing_damage=1, xp=50)
                     ai_component = RangedMonster(4)
 
                     monster = Entity(x, y, 'a', tcod.darker_green, 'Goblin Archer', blocks=True,
@@ -179,7 +179,7 @@ class GameMap:
 
                 if monster_choice == 'hunter':
                     fighter_component = Fighter(
-                        hp=50, defense=2, power=10, crit_chance=5, xp=250)
+                        hp=50, defense=2, power=10, crit_chance=5, piercing_damage=4, xp=250)
                     ai_component = HunterMonster(5, 6)
 
                     monster = Entity(x, y, 'H', tcod.dark_flame, 'Hunter', blocks=True,

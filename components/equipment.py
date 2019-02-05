@@ -3,7 +3,6 @@ from utility.equipment_utility_func import stat_bonus
 
 
 class Equipment:
-    print("ENUM", EquipmentSlots.MAIN_HAND.value)
 
     def __init__(self, main_hand=None, off_hand=None, helmet=None, armor=None, ring=None, amulet=None):
         setattr(self, EquipmentSlots.MAIN_HAND.value, main_hand)

@@ -47,7 +47,10 @@ class RangedMonster:
                 monster.move_astar(target, entities, game_map)
 
             else:
-                monster.move_away(target.x, target.y, game_map, entities)
+                could_move = monster.move_away(target.x, target.y, game_map, entities)
+                if not could_move:
+                    attack_results = monster.fighter.attack(target)
+                    results.extend(attack_results)
 
         return results
 

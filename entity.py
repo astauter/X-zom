@@ -64,21 +64,18 @@ class Entity:
         self.y += dy
 
     def move_towards(self, target_x, target_y, game_map, entities):
-        dx = target_x - self.x
-        dy = target_y - self.y
+        self._move_relative(target_x, target_y, game_map, entities, 'towards')
+
+    def move_away(self, target_x, target_y, game_map, entities):
+        self._move_relative(target_x, target_y, game_map, entities, 'away')
+
+    def _move_relative(self, target_x, target_y, game_map, entities, direction):
+        dx = target_x - self.x if direction == 'towards' else self.x - target_x
+        dy = target_y - self.y if direction == 'towards' else self.y - target_y
         distance = math.sqrt(dx ** 2 + dy ** 2)
 
         dx = int(round(dx / distance))
         dy = int(round(dy / distance))
-
-        if not (game_map.is_blocked(self.x + dx, self.y + dy) or
-                get_blocking_entities_at_location(entities, self.x + dx, self.y + dy)):
-            self.move(dx, dy)
-
-    def move_away(self, target_x, target_y, game_map, entities):
-        dx = (target_x - self.x) * -1
-        dy = (target_y - self.y) * -1
-
         if not (game_map.is_blocked(self.x + dx, self.y + dy) or get_blocking_entities_at_location(entities, self.x + dx, self.y + dy)):
             self.move(dx, dy)
 

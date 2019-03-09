@@ -5,6 +5,7 @@ from components.equippable import Equippable
 from components.fighter import Fighter
 from components.inventory import Inventory
 from components.level import Level
+from components.status_infliction import Status_Infliction
 
 from entity import Entity
 
@@ -87,7 +88,9 @@ def get_constants():
 
 
 def get_game_variables(constants):
-    fighter_component = Fighter(hp=100, defense=0, power=2, crit_chance=0)
+    status_component = Status_Infliction('poisoning', damage=2)
+    fighter_component = Fighter(
+        hp=100, defense=0, power=2, crit_chance=0, status_infliction=status_component)
     inventory_component = Inventory(26)
     level_component = Level()
     equipment_component = Equipment()

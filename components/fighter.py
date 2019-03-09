@@ -1,11 +1,12 @@
 import tcod as tcod
 
 from game_messages import Message
-from utility.utility_func import is_critical
+from utility.attack_util_func import is_critical, damage_done
+from components.status import Status
 
 
-class Fighter:
-    def __init__(self, hp, defense, power, crit_chance=0, xp=0, owner=None):
+class Fighter():
+    def __init__(self, hp, defense, power, crit_chance=0, xp=0, piercing_damage=None, status_infliction=None, owner=None):
         self.base_max_hp = hp
         self.hp = hp
         self.base_defense = defense
@@ -13,6 +14,9 @@ class Fighter:
         self.xp = xp
         self.crit_chance = crit_chance
         self.owner = owner
+        self.piercing_damage = piercing_damage
+        self.status_infliction = status_infliction
+        self.status = Status()
 
     @property
     def max_hp(self):
@@ -41,6 +45,24 @@ class Fighter:
 
         return self.base_defense + bonus
 
+    def has_status_effects(self):
+        if self.status.is_poisoned or self.status.is_paralyzed or self.status.is_paralyzed:
+            return True
+        else:
+            return False
+
+    def process_statuses(self):
+        results = []
+
+        if self.status.is_poisoned:
+            results.extend(self.status.process_poison(self.owner))
+        if self.status.is_paralyzed:
+            results.extend(self.status.process_paralysis(self.owner))
+        if self.status.is_bleeding:
+            results.extend(self.status.process_bleeding(self.owner))
+
+        return results
+
     def take_damage(self, amount):
         results = []
 
@@ -65,28 +87,55 @@ class Fighter:
 
     def attack(self, target, alt_attack=None):
         results = []
+        attack = self.power
+        defense = target.fighter.defense
         is_crit = is_critical(self.crit_chance)
-
-        damage = self.power - target.fighter.defense
-
-        if is_crit:
-            damage = int(damage * 1.5)
+        damage = damage_done(attack, defense, is_crit, self.piercing_damage)
 
         if alt_attack:
-            damage = alt_attack - target.fighter.defense
+            damage = damage_done(alt_attack, defense,
+                                 is_crit, self.piercing_damage)
 
-        if damage > 0 and not is_crit:
-            results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(
-                self.owner.name.capitalize(), target.name, str(damage)), tcod.white)})
-            results.extend(target.fighter.take_damage(damage))
-        elif damage > 0:
+        if damage and is_crit:
             results.append({'message': Message(
-                f'{self.owner.name.capitalize()} attacks {target.name} with at Critical Hit!!! It does {str(damage)}!')})
+                f'{self.owner.name.capitalize()} attacks {target.name} with a Critical Hit!!! It does {str(damage)} points of damage!', tcod.light_flame)})
+            results.extend(target.fighter.take_damage(damage))
+
+        elif damage and self.piercing_damage:
+            results.append({'message': Message(
+                f'{self.owner.name.capitalize()} pierces the{target.name}\'s armor! It does {str(damage)} points of damage!', tcod.white)})
+            results.extend(target.fighter.take_damage(damage))
+
+        elif damage:
+            results.append({'message': Message(
+                f'{self.owner.name.capitalize()} attacks {target.name} for {str(damage)} hit points.', tcod.white)})
+            results.extend(target.fighter.take_damage(damage))
+
         else:
-            results.append({'message': Message('{0} attacks {1} but does no damage.'.format(
-                self.owner.name.capitalize(), target.name), tcod.white)})
+            results.append({'message': Message(
+                f'{self.owner.name.capitalize()} attacks {target.name} but does no damage.', tcod.white)})
+
+        if self.status_infliction:
+            status_effect = self.status_infliction.name
+            if status_effect == 'poisoning':
+                results.append({'message': Message(
+                    f'The {self.owner.name} attacks with a deadly poison', tcod.green)})
+                target.fighter.status.set_status(
+                    self.status_infliction)
+
+            if status_effect == 'paralyzing':
+                results.append({'message': Message(
+                    f'The {self.owner.name} manages to paralyze {target.name}!', tcod.yellow)})
+                target.fighter.status.set_status(
+                    self.status_infliction)
+
+            if status_effect == 'bleeding':
+                results.append({'message': Message(
+                    f'The {self.owner.name} slices into {target.name} deeply. They start to bleed heavily', tcod.red)})
+                target.fighter.status.set_status(
+                    self.status_infliction)
 
         return results
 
-    # def __repr__(self):
-        # return f'Fighter: hp = {self.hp}, defense = {self.defense}, power = {self.power}, xp = {self.xp}'
+    def __repr__(self):
+        return f'Fighter: hp = {self.hp}, defense = {self.defense}, power = {self.power}, xp = {self.xp}'

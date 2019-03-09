@@ -69,6 +69,17 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
         player_turn_results = []
 
+        if game_state == GameStates.PROCESS_PLAYER:
+            if player.fighter.has_status_effects():
+                player_turn_results.extend(player.fighter.process_statuses())
+
+                if player.fighter.status.is_paralyzed:
+                    game_state == GameStates.PROCESS_ENEMY
+
+                game_state = GameStates.PLAYERS_TURN
+
+            game_state = GameStates.PLAYERS_TURN
+
         if move and game_state == GameStates.PLAYERS_TURN:
             dx, dy = move
             destination_x = player.x + dx
@@ -93,10 +104,10 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
                     fov_recompute = True
 
-                game_state = GameStates.ENEMY_TURN
+                game_state = GameStates.PROCESS_ENEMY
 
         elif wait:
-            game_state = GameStates.ENEMY_TURN
+            game_state = GameStates.PROCESS_ENEMY
 
         elif pickup and game_state == GameStates.PLAYERS_TURN:
             for entity in entities:
@@ -123,7 +134,6 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             item = player.inventory.items[inventory_index]
 
             if game_state == GameStates.SHOW_INVENTORY:
-                # (question)why not **kwargs here?
                 player_turn_results.extend(player.inventory.use(
                     item, game_map, entities=entities, fov_map=fov_map))
             elif game_state == GameStates.DROP_INVENTORY:
@@ -216,10 +226,10 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             if item_added:
                 entities.remove(item_added)
 
-                game_state = GameStates.ENEMY_TURN
+                game_state = GameStates.PROCESS_ENEMY
 
             if item_consumed:
-                game_state = GameStates.ENEMY_TURN
+                game_state = GameStates.PROCESS_ENEMY
 
             if targeting:
                 previous_game_state = GameStates.PLAYERS_TURN
@@ -231,7 +241,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
             if item_dropped:
                 entities.append(item_dropped)
-                game_state = GameStates.ENEMY_TURN
+                game_state = GameStates.PROCESS_ENEMY
 
             if equip:
                 equip_results = player.equipment.toggle_equip(equip)
@@ -248,7 +258,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                         message_log.add_message(
                             Message(f'You dequipped the {dequipped.name}'))
 
-                game_state = GameStates.ENEMY_TURN
+                game_state = GameStates.PROCESS_ENEMY
 
                 if equipped:
                     message_log.add_message
@@ -268,6 +278,24 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                         f'You grow stronger. You are level {player.level.current_level}!', tcod.yellow))
                     previous_game_state = game_state
                     game_state = GameStates.LEVEL_UP
+
+        if game_state == GameStates.PROCESS_ENEMY:
+            for entity in entities:
+                if entity.fighter:
+                    if entity.fighter.has_status_effects():
+                        enemy_process_results = entity.fighter.process_statuses()
+
+                        for enemy_process_result in enemy_process_results:
+                            print('enemy_process_result', enemy_process_result)
+                            message = enemy_process_result.get('message')
+                            dead_entity = enemy_process_result.get('dead')
+
+                            if dead_entity:
+                                message = kill_monster(dead_entity)
+
+                            message_log.add_message(message)
+
+            game_state = GameStates.ENEMY_TURN
 
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
@@ -297,7 +325,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                         break
 
             else:
-                game_state = GameStates.PLAYERS_TURN
+                game_state = GameStates.PROCESS_PLAYER
 
 
 def main():

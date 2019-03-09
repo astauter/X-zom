@@ -7,6 +7,7 @@ from components.equippable import Equippable
 from components.fighter import Fighter
 from components.item import Item
 from components.stairs import Stairs
+from components.status_infliction import Status_Infliction
 
 from entity import Entity
 
@@ -154,8 +155,9 @@ class GameMap:
                 monster_choice = random_choice_from_dict(monster_chances)
 
                 if monster_choice == 'orc':
+                    status_component = Status_Infliction('poisoning', damage=2)
                     fighter_component = Fighter(
-                        hp=20, defense=0, power=4, crit_chance=1, xp=40)
+                        hp=20, defense=0, power=4, crit_chance=1, xp=40, status_infliction=status_component)
                     ai_component = BasicMonster()
 
                     monster = Entity(x, y, 'o', tcod.desaturated_green, 'Orc',

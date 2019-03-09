@@ -149,9 +149,11 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 player.fighter.base_max_hp += 20
                 player.fighter.hp += 20
             elif level_up == 'str':
-                player.fighter.base_power += 3
+                player.fighter.base_power += 2
             elif level_up == 'def':
                 player.fighter.base_defense += 1
+            elif level_up == 'crit_chance':
+                player.fighter.crit_chance += 4
 
             game_state = previous_game_state
 
@@ -172,10 +174,8 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 player_turn_results.append({'targeting_cancelled': True})
                 message_log.add_message(
                     Message('Targeting Cancelled', tcod.fuchsia))
-        # refactor here to include a sure you want to quit?
 
         if exit:
-            # w/ esc we exit to game from menu or quit from main game
             if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, GameStates.CHARACTER_SCREEN):
                 game_state = previous_game_state
             elif game_state == GameStates.TARGETING:
@@ -208,7 +208,6 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             if dead_entity:
                 if dead_entity == player:
                     message, game_state = kill_player(dead_entity)
-                    # refactor add restart ability
                 else:
                     message = kill_monster(dead_entity)
 

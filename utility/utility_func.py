@@ -36,9 +36,8 @@ def from_dungeon_level(table, dungeon_level):
     return 0
 
 
-def stat_bonus(bonus, equipped, attribute):
-    for equipment in equipped:
-        boosted_stat = getattr(equipment, attribute)
-        bonus += boosted_stat
+def is_critical(critical_chance):
+    random_chance = randint(1, 100)
 
-    return bonus
+    if random_chance <= critical_chance:
+        return True

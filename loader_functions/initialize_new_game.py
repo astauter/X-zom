@@ -87,7 +87,7 @@ def get_constants():
 
 
 def get_game_variables(constants):
-    fighter_component = Fighter(hp=100, defense=0, power=2)
+    fighter_component = Fighter(hp=100, defense=0, power=2, crit_chance=0)
     inventory_component = Inventory(26)
     level_component = Level()
     equipment_component = Equipment()

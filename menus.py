@@ -2,9 +2,6 @@ import tcod as tcod
 
 from equipment_slots import EquipmentSlots
 
-# return here to refactor
-
-
 def menu(con, header, options, width, screen_width, screen_height):
     if len(options) > 26:
         raise ValueError('Cannot have a menu with more than 26 options')
@@ -22,7 +19,6 @@ def menu(con, header, options, width, screen_width, screen_height):
     tcod.console_print_rect_ex(
         window, 0, 0, width, height, tcod.BKGND_NONE, tcod.LEFT, header)
 
-    # refactor
     # print all the options
     y = header_height
     letter_index = ord('a')
@@ -80,7 +76,7 @@ def main_menu(con, background_image, screen_width, screen_height):
 
 def level_up_menu(con, header, player, menu_width, screen_width, screen_height):
     options = ['Constitution (+20 HP)',
-               'Strength (+3 attack)', 'Agility (+1 defense)']
+               'Strength (+2 attack)', 'Agility (+1 defense)', 'Perception (+4% Critical Hit)']
 
     menu(con, header, options, menu_width, screen_width, screen_height)
 
@@ -113,8 +109,9 @@ def generate_character_screen_lines(player):
     lines.append({ 'verticalIndex': 5, 'displayText': f'Attack: {player.fighter.power}' })
     lines.append({ 'verticalIndex': 6, 'displayText': f'Defense: {player.fighter.defense}' })
     lines.append({ 'verticalIndex': 7, 'displayText': f'Experience to Level Up: {player.level.experience_to_next_level - player.level.current_xp}' })
+    lines.append({ 'verticalIndex': 8, 'displayText': f'Critical Chance: {player.fighter.crit_chance}' })
 
-    lines.append({ 'verticalIndex': 9, 'displayText': 'Character Equipment' })
+    lines.append({ 'verticalIndex': 10, 'displayText': 'Character Equipment' })
     for idx, equipmentSlot in enumerate(['main_hand', 'off_hand', 'helmet', 'armor', 'ring', 'amulet']):
         equipment = getattr(player.equipment, equipmentSlot)
         equipmentName = 'None'
@@ -123,7 +120,7 @@ def generate_character_screen_lines(player):
         label = equipmentSlot.replace('_', ' ')
         displayText = f'{label}: {equipmentName}'
 
-        lines.append({ 'verticalIndex': 11 + idx, 'displayText': displayText })
+        lines.append({ 'verticalIndex': 12 + idx, 'displayText': displayText })
 
     return lines
 

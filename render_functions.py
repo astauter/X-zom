@@ -116,7 +116,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
         level_up_menu(con, 'LEVEL UP! Choose a stat to raise:',
                       player, 40, screen_width, screen_height)
     elif game_state == GameStates.CHARACTER_SCREEN:
-        character_screen(player, 30, 15, screen_width, screen_height)
+        character_screen(player, 30, 20, screen_width, screen_height)
 
 
 def clear_all(con, entities):

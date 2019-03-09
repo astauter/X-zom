@@ -7,6 +7,7 @@ from components.equippable import Equippable
 from components.fighter import Fighter
 from components.item import Item
 from components.stairs import Stairs
+from components.status_infliction import Status_Infliction
 
 from entity import Entity
 
@@ -154,8 +155,9 @@ class GameMap:
                 monster_choice = random_choice_from_dict(monster_chances)
 
                 if monster_choice == 'orc':
+                    status_component = Status_Infliction('poisoning', damage=2)
                     fighter_component = Fighter(
-                        hp=20, defense=0, power=4, crit_chance=1, xp=40)
+                        hp=20, defense=0, power=4, crit_chance=1, xp=40, status_infliction=status_component)
                     ai_component = BasicMonster()
 
                     monster = Entity(x, y, 'o', tcod.desaturated_green, 'Orc',
@@ -171,7 +173,7 @@ class GameMap:
 
                 if monster_choice == 'archer':
                     fighter_component = Fighter(
-                        hp=12, defense=0, power=3, crit_chance=2, xp=50)
+                        hp=12, defense=0, power=3, crit_chance=2, piercing_damage=1, xp=50)
                     ai_component = RangedMonster(4)
 
                     monster = Entity(x, y, 'a', tcod.darker_green, 'Goblin Archer', blocks=True,
@@ -179,7 +181,7 @@ class GameMap:
 
                 if monster_choice == 'hunter':
                     fighter_component = Fighter(
-                        hp=50, defense=2, power=10, crit_chance=5, xp=250)
+                        hp=50, defense=2, power=10, crit_chance=5, piercing_damage=4, xp=250)
                     ai_component = HunterMonster(5, 6)
 
                     monster = Entity(x, y, 'H', tcod.dark_flame, 'Hunter', blocks=True,

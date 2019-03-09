@@ -3,7 +3,6 @@ from utility.equipment_utility_func import stat_bonus
 
 
 class Equipment:
-    print("ENUM", EquipmentSlots.MAIN_HAND.value)
 
     def __init__(self, main_hand=None, off_hand=None, helmet=None, armor=None, ring=None, amulet=None):
         setattr(self, EquipmentSlots.MAIN_HAND.value, main_hand)
@@ -43,16 +42,16 @@ class Equipment:
 
         slot = equippable_entity.equippable.slot.value
         equipment = equippable_entity.equippable
-        currentlyequipped = getattr(self, slot)
+        currently_equipped = getattr(self, slot)
 
-        already_equipped = currentlyequipped == equippable_entity
+        already_equipped = currently_equipped == equippable_entity
         if already_equipped:
             setattr(self, slot, None)
             self.equipped.remove(equipment)
             results.append({'dequipped': equippable_entity})
         else:
-            if currentlyequipped:
-                self.toggle_equip(currentlyequipped)
+            if currently_equipped:
+                self.toggle_equip(currently_equipped)
 
             setattr(self, slot, equippable_entity)
             self.equipped.append(equipment)

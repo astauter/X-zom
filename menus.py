@@ -1,5 +1,7 @@
 import tcod as tcod
 
+from equipment_slots import EquipmentSlots
+
 # return here to refactor
 
 
@@ -92,21 +94,42 @@ def character_screen(player, character_screen_width, character_screen_height, sc
 
     tcod.console_set_default_foreground(window, tcod.white)
 
-    tcod.console_print_rect_ex(window, 0, 1, character_screen_width,
-                               character_screen_height, tcod.BKGND_NONE, tcod.LEFT, 'Character Information')
-    tcod.console_print_rect_ex(window, 0, 2, character_screen_width, character_screen_height,
-                               tcod.BKGND_NONE, tcod.LEFT, f'Level: {player.level.current_level}')
-    tcod.console_print_rect_ex(window, 0, 3, character_screen_width, character_screen_height,
-                               tcod.BKGND_NONE, tcod.LEFT, f'Experience to Level Up: {player.level.experience_to_next_level - player.level.current_xp}')
+    # [{ verticalIndex: 1, displayText: 'blah blah }]
 
-    tcod.console_print_rect_ex(window, 0, 6, character_screen_width, character_screen_height,
-                               tcod.BKGND_NONE, tcod.LEFT, f'Maximum HP: {player.fighter.max_hp}')
-    tcod.console_print_rect_ex(window, 0, 7, character_screen_width, character_screen_height,
-                               tcod.BKGND_NONE, tcod.LEFT, f'Attack: {player.fighter.power}')
-    tcod.console_print_rect_ex(window, 0, 8, character_screen_width, character_screen_height,
-                               tcod.BKGND_NONE, tcod.LEFT, f'Defense: {player.fighter.defense}')
+    lines = generate_character_screen_lines(player)
+    print('HERE Lines:, ', lines)
+    print('***************')
+    for line in lines:
+        print("flasjfaoisefen", line)
+        tcod.console_print_rect_ex(window, 0, line.verticalIndex, character_screen_width, character_screen_height, tcod.BKGND_NONE, tcod.LEFT, line.displayText)
 
     x = screen_width // 2 - character_screen_width // 2
     y = screen_height // 2 - character_screen_height // 2
     tcod.console_blit(window, 0, 0, character_screen_width,
                       character_screen_height, 0, x, y, 1.0, 0.7)
+
+def generate_character_screen_lines(player):
+    lines = []
+
+    lines.append({ 'verticalIndex': 1, 'displayText': 'Character Stats' })
+    lines.append({ 'verticalIndex': 2, 'displayText': f'Level: {player.level.current_level}' })
+    lines.append({ 'verticalIndex': 3, 'displayText': f'Maximum HP: {player.fighter.max_hp}' })
+    lines.append({ 'verticalIndex': 4, 'displayText': f'Attack: {player.fighter.power}' })
+    lines.append({ 'verticalIndex': 5, 'displayText': f'Defense: {player.fighter.defense}' })
+    lines.append({ 'verticalIndex': 6, 'displayText': f'Experience to Level Up: {player.level.experience_to_next_level - player.level.current_xp}' })
+
+    lines.append({ 'verticalIndex': 8, 'displayText': 'Character Equipment' })
+    for idx, equipmentSlot in enumerate(['main_hand', 'off_hand', 'helmet', 'armor', 'ring', 'amulet']):
+        equipment = getattr(player.equipment, equipmentSlot)
+        equipmentName = 'None'
+        if (equipment):
+            #print(equipment)
+            equipmentName = equipment.name
+        label = equipmentSlot
+        displayText = f'{label}: {equipmentName}'
+
+        lines.append({ 'verticalIndex': 9 + idx, 'displayText': displayText })
+
+    return lines
+
+

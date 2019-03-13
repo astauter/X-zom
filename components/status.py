@@ -4,7 +4,7 @@ from game_messages import Message
 
 
 class Status:
-    def __init__(self, is_poisoned=False, is_bleeding=False, poison_damage=False, bleeding_duration=0, bleeding_damage=False, paralyzed_duration=0, is_paralyzed=False):
+    def __init__(self, is_poisoned=False, is_bleeding=False, poison_damage=0, bleeding_duration=0, bleeding_damage=0, paralyzed_duration=0, is_paralyzed=False):
         self.is_poisoned = is_poisoned
         self.poison_damage = poison_damage
         self.is_bleeding = is_bleeding

@@ -13,7 +13,7 @@ from entity import Entity
 
 from game_messages import Message
 
-from item_functions import heal, gain_attack, cast_lightning, cast_fireball, cast_confuse
+from item_functions import heal, cure, gain_attack, cast_lightning, cast_fireball, cast_confuse
 
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
@@ -132,7 +132,8 @@ class GameMap:
         }
 
         item_chances = {
-            'healing_potion': 28,
+            'healing_potion': 20,
+            'antidote': 15,
             'attack_potion': 2,
             'lightning_scroll': from_dungeon_level([[25, 4]], self.dungeon_level),
             'fireball_scroll': from_dungeon_level([[25, 6]], self.dungeon_level),
@@ -204,6 +205,10 @@ class GameMap:
                     item_component = Item(use_function=heal, amount=25)
                     item = Entity(x, y, '!', tcod.violet,
                                   'Healing Potion', render_order=RenderOrder.ITEM, item=item_component)
+                if item_choice == 'antidote':
+                    item_component = Item(use_function=cure)
+                    item = Entity(x, y, '!', tcod.light_green, 'Antidote',
+                                  render_order=RenderOrder.ITEM, item=item_component)
                 if item_choice == 'confusion_scroll':
                     item_component = Item(use_function=cast_confuse, targeting=True, targeting_message=Message(
                         'Left-click an enemy to confuse it, or right-click to cancel.', tcod.light_blue))

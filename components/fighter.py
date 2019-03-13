@@ -60,7 +60,6 @@ class Fighter():
             results.extend(self.status.process_paralysis(self.owner))
         if self.status.is_bleeding:
             results.extend(self.status.process_bleeding(self.owner))
-
         return results
 
     def take_damage(self, amount):
@@ -81,6 +80,10 @@ class Fighter():
 
         if self.hp > self.max_hp:
             self.hp = self.max_hp
+
+    def cure_poison(self):
+        self.status.is_poisoned = False
+        self.status.poison_damage = 0
 
     def gain_attack(self, amount):
         self.base_power += amount

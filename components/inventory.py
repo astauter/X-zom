@@ -48,7 +48,6 @@ class Inventory:
 
                 item_use_results = item_component.use_function(
                     self.owner, game_map, **kwargs)
-
                 for item_use_result in item_use_results:
                     if item_use_result.get('consumed'):
                         self.remove_item(item_entity)

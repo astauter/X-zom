@@ -281,19 +281,19 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
         if game_state == GameStates.PROCESS_ENEMY:
             for entity in entities:
-                if entity.fighter:
-                    if entity.fighter.has_status_effects():
-                        enemy_process_results = entity.fighter.process_statuses()
+                if entity.ai:
+                    if entity.fighter:
+                        if entity.fighter.has_status_effects():
+                            enemy_process_results = entity.fighter.process_statuses()
 
-                        for enemy_process_result in enemy_process_results:
-                            print('enemy_process_result', enemy_process_result)
-                            message = enemy_process_result.get('message')
-                            dead_entity = enemy_process_result.get('dead')
+                            for enemy_process_result in enemy_process_results:
+                                message = enemy_process_result.get('message')
+                                dead_entity = enemy_process_result.get('dead')
 
-                            if dead_entity:
-                                message = kill_monster(dead_entity)
+                                if dead_entity:
+                                    message = kill_monster(dead_entity)
 
-                            message_log.add_message(message)
+                                message_log.add_message(message)
 
             game_state = GameStates.ENEMY_TURN
 

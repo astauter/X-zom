@@ -23,6 +23,27 @@ def heal(*args, **kwargs):
     return results
 
 
+def cure(*args, **kwargs):
+    entity = args[0]
+
+    results = []
+
+    if entity.fighter.hp == entity.fighter.max_hp and entity.fighter.status.is_poisoned == False:
+        results.append({'consumed': False, 'message': Message(
+            'You do not need curing!', tcod.yellow)})
+    elif entity.fighter.status.is_poisoned == False:
+        entity.fighter.heal(8)
+        results.append({'consumed': True, 'message': Message(
+            'The antidote heals for a minor amount.', tcod.yellow)})
+    else:
+        entity.fighter.heal(8)
+        entity.fighter.cure_poison()
+        results.append({'consumed': True, 'message': Message(
+            'You are no longer poisoned!')})
+
+    return results
+
+
 def gain_attack(*args, **kwargs):
     entity = args[0]
     amount = kwargs.get('amount')

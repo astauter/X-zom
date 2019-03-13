@@ -64,25 +64,49 @@ class Entity:
         self.y += dy
 
     def move_towards(self, target_x, target_y, game_map, entities):
-        dx = target_x - self.x
-        dy = target_y - self.y
+        return self._move_relative(target_x, target_y, game_map, entities, 'towards')
+
+    def move_away(self, target_x, target_y, game_map, entities):
+        return self._move_relative(target_x, target_y, game_map, entities, 'away')
+
+    def _move_relative(self, target_x, target_y, game_map, entities, direction):
+        dx = target_x - self.x if direction == 'towards' else self.x - target_x
+        dy = target_y - self.y if direction == 'towards' else self.y - target_y
         distance = math.sqrt(dx ** 2 + dy ** 2)
 
         dx = int(round(dx / distance))
         dy = int(round(dy / distance))
 
-        if not (game_map.is_blocked(self.x + dx, self.y + dy) or
-                get_blocking_entities_at_location(entities, self.x + dx, self.y + dy)):
+        if not self._position_blocked(self.x + dx, self.y + dy, entities, game_map):
             self.move(dx, dy)
+            return True
+        elif dx != 0 and dy == 0:
+            if not self._position_blocked(self.x + dx, self.y + 1, entities, game_map):
+                self.move(dx, 1)
+                return True
+            elif not self._position_blocked(self.x + dx, self.y - 1, entities, game_map):
+                self.move(dx, -1)
+                return True
+        elif dy != 0 and dx == 0:
+            if not self._position_blocked(self.x + 1, self.y + dy, entities, game_map):
+                self.move(1, dy)
+                return True
+            elif not self._position_blocked(self.x - 1, self.y + dy, entities, game_map):
+                self.move(-1, dy)
+                return True
+        elif dy !=0 and dx != 0:
+            if not self._position_blocked(self.x + dx, self.y + 0, entities, game_map):
+                self.move(dx, 0)
+                return True
+            elif not self._position_blocked(self.x + 0, self.y + dy, entities, game_map):
+                self.move(0, dy)
+                return True
+        return False
 
-    def move_away(self, target_x, target_y, game_map, entities):
-        dx = (target_x - self.x) * -1
-        dy = (target_y - self.y) * -1
+    def _position_blocked(self, x, y, entities, game_map):
+        return (game_map.is_blocked(x, y) or get_blocking_entities_at_location(entities, x, y))
 
-        if not (game_map.is_blocked(self.x + dx, self.y + dy) or get_blocking_entities_at_location(entities, self.x + dx, self.y + dy)):
-            self.move(dx, dy)
-
-    # pathfinding algo using A* method will need to look through later
+    # pathfinding algo using A* method
     def move_astar(self, target, entities, game_map):
         # create a FOV map that has the dimensions of the map
         fov = tcod.map_new(game_map.width, game_map.height)

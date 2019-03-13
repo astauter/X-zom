@@ -106,7 +106,7 @@ class Entity:
     def _position_blocked(self, x, y, entities, game_map):
         return (game_map.is_blocked(x, y) or get_blocking_entities_at_location(entities, x, y))
 
-    # pathfinding algo using A* method will need to look through later
+    # pathfinding algo using A* method
     def move_astar(self, target, entities, game_map):
         # create a FOV map that has the dimensions of the map
         fov = tcod.map_new(game_map.width, game_map.height)

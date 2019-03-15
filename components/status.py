@@ -2,6 +2,7 @@ import tcod as tcod
 
 from game_messages import Message
 from utility.attack_util_func import is_successful
+from components.ai import ParalyzedMonster
 
 
 class Status:
@@ -14,7 +15,8 @@ class Status:
         self.is_paralyzed = is_paralyzed
         self.paralyzed_duration = paralyzed_duration
 
-    def set_status(self, status_infliction):
+    def set_status(self, status_infliction, *args):
+        entity = args[0]
 
         if status_infliction.name == 'poisoning':
             self.is_poisoned = True
@@ -22,6 +24,12 @@ class Status:
         if status_infliction.name == 'paralyzing':
             self.is_paralyzed = True
             self.paralyzed_duration = status_infliction.duration
+
+            if entity.ai:
+                paralyzed_ai = ParalyzedMonster(
+                    entity.ai, self.paralyzed_duration, entity)
+
+                entity.ai = paralyzed_ai
         if status_infliction.name == 'bleeding':
             self.is_bleeding = True
             self.bleeding_duration = status_infliction.duration
@@ -66,6 +74,8 @@ class Status:
 
         else:
             self.is_paralyzed = False
+
+            owner.ai = owner.ai.previous_ai
 
             results.append({'message': Message(
                 f'{owner.name.capitalize()}\'s paralysis wears off', tcod.white)})

@@ -132,7 +132,7 @@ class Fighter():
                     results.append({'message': Message(
                         f'The {self.owner.name} manages to paralyze {target.name}!', tcod.yellow)})
                     target.fighter.status.set_status(
-                        self.status_infliction)
+                        self.status_infliction, target)
 
             if status_effect == 'bleeding':
                 results.append({'message': Message(

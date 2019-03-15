@@ -47,7 +47,8 @@ class RangedMonster:
                 monster.move_astar(target, entities, game_map)
 
             else:
-                could_move = monster.move_away(target.x, target.y, game_map, entities)
+                could_move = monster.move_away(
+                    target.x, target.y, game_map, entities)
                 if not could_move:
                     attack_results = monster.fighter.attack(target)
                     results.extend(attack_results)
@@ -99,3 +100,18 @@ class ConfusedMonster:
             results.append({'message': Message(
                 f'The {self.owner.name} is no longer confused!', tcod.fuchsia)})
         return results
+
+
+class ParalyzedMonster:
+    def __init__(self, previous_ai, number_of_turns=None, owner=None):
+        self.previous_ai = previous_ai
+        self.number_of_turns = number_of_turns
+        self.owner = owner
+
+    def take_turn(self, *args):
+        results = []
+
+        return results
+
+    def __repr__(self):
+        return f'Previous AI: {self.previous_ai}, # of turns {self.number_of_turns}'

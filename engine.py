@@ -74,11 +74,13 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 player_turn_results.extend(player.fighter.process_statuses())
 
                 if player.fighter.status.is_paralyzed:
-                    game_state == GameStates.PROCESS_ENEMY
+                    game_state = GameStates.PROCESS_ENEMY
 
+                else:
+                    game_state = GameStates.PLAYERS_TURN
+
+            else:
                 game_state = GameStates.PLAYERS_TURN
-
-            game_state = GameStates.PLAYERS_TURN
 
         if move and game_state == GameStates.PLAYERS_TURN:
             dx, dy = move

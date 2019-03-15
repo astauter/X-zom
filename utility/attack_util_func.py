@@ -2,11 +2,13 @@ import math
 from random import randint
 
 
-def is_critical(critical_chance):
-    random_chance = randint(1, 100)
+def is_successful(chance):
+    random_num = randint(1, 100)
 
-    if random_chance <= critical_chance:
+    if random_num <= chance:
         return True
+
+    return False
 
 
 def damage_done(attack, defense, is_crit, piercing_damage):

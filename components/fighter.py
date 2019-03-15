@@ -1,7 +1,7 @@
 import tcod as tcod
 
 from game_messages import Message
-from utility.attack_util_func import is_critical, damage_done
+from utility.attack_util_func import is_successful, damage_done
 from components.status import Status
 
 
@@ -92,7 +92,7 @@ class Fighter():
         results = []
         attack = self.power
         defense = target.fighter.defense
-        is_crit = is_critical(self.crit_chance)
+        is_crit = is_successful(self.crit_chance)
         damage = damage_done(attack, defense, is_crit, self.piercing_damage)
 
         if alt_attack:
@@ -127,10 +127,12 @@ class Fighter():
                     self.status_infliction)
 
             if status_effect == 'paralyzing':
-                results.append({'message': Message(
-                    f'The {self.owner.name} manages to paralyze {target.name}!', tcod.yellow)})
-                target.fighter.status.set_status(
-                    self.status_infliction)
+                paralysis = is_successful(self.status_infliction.chance)
+                if paralysis:
+                    results.append({'message': Message(
+                        f'The {self.owner.name} manages to paralyze {target.name}!', tcod.yellow)})
+                    target.fighter.status.set_status(
+                        self.status_infliction)
 
             if status_effect == 'bleeding':
                 results.append({'message': Message(

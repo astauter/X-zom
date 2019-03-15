@@ -1,6 +1,7 @@
 import tcod as tcod
 
 from game_messages import Message
+from utility.attack_util_func import is_successful
 
 
 class Status:
@@ -18,7 +19,7 @@ class Status:
         if status_infliction.name == 'poisoning':
             self.is_poisoned = True
             self.poison_damage = status_infliction.damage
-        if status_infliction.name == 'paralysing':
+        if status_infliction.name == 'paralyzing':
             self.is_paralyzed = True
             self.paralyzed_duration = status_infliction.duration
         if status_infliction.name == 'bleeding':
@@ -54,15 +55,22 @@ class Status:
         return results
 
     def process_paralysis(self, owner):
+        results = []
+
         if self.paralyzed_duration >= 1:
+
             self.paralyzed_duration -= 1
 
-            return {'message': Message(f'{owner.name.capitalize()} is paralyzed! They can\'t move!', tcod.yellow)}
+            results.append({'message': Message(
+                f'{owner.name.capitalize()} is paralyzed! They can\'t move!', tcod.yellow)})
 
         else:
             self.is_paralyzed = False
 
-            return {'message': Message(f'{owner.name.capitalize()}\'s paralysis wears off', tcod.white)}
+            results.append({'message': Message(
+                f'{owner.name.capitalize()}\'s paralysis wears off', tcod.white)})
+
+        return results
 
     def __repr__(self):
         return f'Status: is poisoned:{self.is_poisoned}, poison damage:{self.poison_damage}'

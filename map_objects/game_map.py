@@ -156,7 +156,8 @@ class GameMap:
                 monster_choice = random_choice_from_dict(monster_chances)
 
                 if monster_choice == 'orc':
-                    status_component = Status_Infliction('poisoning', damage=2)
+                    status_component = Status_Infliction(
+                        'paralyzing', duration=5, chance=0)
                     fighter_component = Fighter(
                         hp=20, defense=0, power=4, crit_chance=1, xp=40, status_infliction=status_component)
                     ai_component = BasicMonster()

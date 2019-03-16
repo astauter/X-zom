@@ -46,7 +46,7 @@ class Fighter():
         return self.base_defense + bonus
 
     def has_status_effects(self):
-        if self.status.is_poisoned or self.status.is_paralyzed or self.status.is_paralyzed:
+        if self.status.is_poisoned or self.status.is_paralyzed or self.status.is_bleeding:
             return True
         else:
             return False
@@ -134,7 +134,7 @@ class Fighter():
                     target.fighter.status.set_status(
                         self.status_infliction, target)
 
-            if status_effect == 'bleeding':
+            if status_effect == 'bleeding' and not target.fighter.status.is_bleeding:
                 results.append({'message': Message(
                     f'The {self.owner.name} slices into {target.name} deeply. They start to bleed heavily', tcod.red)})
                 target.fighter.status.set_status(

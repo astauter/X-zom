@@ -88,7 +88,7 @@ def get_constants():
 
 
 def get_game_variables(constants):
-    status_component = Status_Infliction('paralyzing', duration=4, chance=100)
+    status_component = Status_Infliction('bleeding', duration=4, damage=3)
     fighter_component = Fighter(
         hp=100, defense=0, power=2, crit_chance=0, status_infliction=status_component)
     inventory_component = Inventory(26)

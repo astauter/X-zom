@@ -16,9 +16,14 @@ def heal(*args, **kwargs):
         results.append({'consumed': False, 'message': Message(
             'You are already at full health', tcod.yellow)})
     else:
+        if entity.fighter.status.is_bleeding:
+            status = entity.fighter.status
+            status.is_bleeding = False
+            status.bleeding_damage = 0
+            status.bleeding_duration = 0
         entity.fighter.heal(amount)
         results.append(
-            {'consumed': True, 'message': Message('Your wounds start to feel better!', tcod.green)})
+            {'consumed': True, 'message': Message('Your wounds start to heal!', tcod.green)})
 
     return results
 

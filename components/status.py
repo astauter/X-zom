@@ -16,7 +16,8 @@ class Status:
         self.paralyzed_duration = paralyzed_duration
 
     def set_status(self, status_infliction, *args):
-        entity = args[0]
+        if args:
+            entity = args[0]
 
         if status_infliction.name == 'poisoning':
             self.is_poisoned = True
@@ -33,7 +34,7 @@ class Status:
         if status_infliction.name == 'bleeding':
             self.is_bleeding = True
             self.bleeding_duration = status_infliction.duration
-            self.bleeding_damage = status_infliction.bleeding_damage
+            self.bleeding_damage = status_infliction.damage
 
     def process_poison(self, owner):
         results = []

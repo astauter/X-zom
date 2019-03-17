@@ -8,6 +8,7 @@ from components.fighter import Fighter
 from components.item import Item
 from components.stairs import Stairs
 from components.status_infliction import Status_Infliction
+from components.status import Status
 
 from entity import Entity
 
@@ -128,12 +129,13 @@ class GameMap:
             'orc': 80,
             'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level),
             'archer': from_dungeon_level([[10, 1], [20, 3], [30, 5]], self.dungeon_level),
-            'hunter': from_dungeon_level([[3, 3], [5, 4], [8, 5], [10, 7]], self.dungeon_level)
+            'hunter': from_dungeon_level([[3, 3], [5, 4], [8, 5], [10, 7]], self.dungeon_level),
+            'poison archer': from_dungeon_level([[5, 3], [10, 5]], self.dungeon_level)
         }
 
         item_chances = {
             'healing_potion': 20,
-            'antidote': 15,
+            'antidote': 10,
             'attack_potion': 2,
             'lightning_scroll': from_dungeon_level([[25, 4]], self.dungeon_level),
             'fireball_scroll': from_dungeon_level([[25, 6]], self.dungeon_level),
@@ -156,10 +158,8 @@ class GameMap:
                 monster_choice = random_choice_from_dict(monster_chances)
 
                 if monster_choice == 'orc':
-                    status_component = Status_Infliction(
-                        'bleeding', duration=20, damage=3)
                     fighter_component = Fighter(
-                        hp=20, defense=0, power=4, crit_chance=1, xp=40, status_infliction=status_component)
+                        hp=20, defense=0, power=4, crit_chance=1, xp=40)
                     ai_component = BasicMonster()
 
                     monster = Entity(x, y, 'o', tcod.desaturated_green, 'Orc',
@@ -179,6 +179,17 @@ class GameMap:
                     ai_component = RangedMonster(4)
 
                     monster = Entity(x, y, 'a', tcod.darker_green, 'Goblin Archer', blocks=True,
+                                     render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+
+                if monster_choice == 'poison archer':
+                    status_component = Status_Infliction(
+                        'poisoning', damage=2)
+                    ai_component = RangedMonster(4)
+
+                    fighter_component = Fighter(
+                        hp=12, defense=0, power=2, xp=75, status_infliction=status_component
+                    )
+                    monster = Entity(x, y, 'a', tcod.lime, 'Goblin Poison Archer', blocks=True,
                                      render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
 
                 if monster_choice == 'hunter':
@@ -281,6 +292,8 @@ class GameMap:
                       constants['map_height'], player, entities)
 
         player.fighter.heal(player.fighter.max_hp // 2)
+        if player.fighter.has_status_effects():
+            player.fighter.status = Status()
         message_log.add_message(
             Message('You take a moment to rest, and recover your strength.', tcod.fuchsia))
 
